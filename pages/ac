@@ -1,0 +1,47 @@
+            <div class="panel panel-primary" ng-switch-when="addPlaylist">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Playlist</h3>
+                </div>
+                <div class="panel-body">
+                    <!-- Form -->
+                    <form action="post" class="form-horizontal" name="form" ng-submit="submit()" novalidate>
+                        <!-- Name -->
+                        <div class="form-group">
+                            <label for="name" class="control-label col-md-2 col-sm-2">Tên Playlist</label>
+                            <div class="col-md-5 col-sm-5">
+                                <input name="name" type="text" class="form-control" placeholder="Tên Playlist của bạn"
+                                       ng-model="playlistData.data.attributes.name">
+                            </div>
+                        </div>
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description" class="control-label col-md-2 col-sm-2">Mô tả</label>
+                            <div class="col-md-5 col-sm-5">
+                            <textarea name="description" type="text" class="form-control" placeholder="Mô tả playlist" rows="5"
+                                      ng-model="playlistData.data.attributes.description"></textarea>
+                            </div>
+                        </div>
+                        <!-- Thumbnail -->
+                        <div class="form-group">
+                            <label for="thumbnail" class="control-label col-md-2 col-sm-2">Thumbnail</label>
+                            <div class="col-md-5 col-sm-5">
+                                <input name="thumbnail" type="text" class="form-control" placeholder="Ảnh bìa cho Playlist"
+                                       ng-model="playlistData.data.attributes.thumbnailUrl">
+                            </div>
+                        </div>
+                        <!-- Button -->
+                        <div class="form-group">
+                            <div class="col-md-2 col-sm-2">
+                                &nbsp;
+                            </div>
+                            <div class="col-md-10 col-sm-10">
+                                <button type="button" class="btn btn-primary" ng-click="doSubmit()"><span class="glyphicon glyphicon-send"></span> Submit</button>
+                                <button type="reset" class="btn btn-warning"><span class="glyphicon glyphicon-refresh"></span> Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer">
+                    * Nhắc nhở: <strong>Tên Playlist phải có ít nhất 7 ký tự</strong>
+                </div>
+            </div>

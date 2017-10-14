@@ -1,0 +1,158 @@
+<section class="container">
+    <ol class="breadcrumb">
+        <li><a href="#/">Trang chủ</a></li>
+        <li class="active">Upload</li>
+    </ol>
+</section>
+
+
+<section class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Form Upload Video</h3>
+        </div>
+        <div class="panel-body">
+            <div class="alert alert-success text-center" ng-show="uploadSuccess">
+                <span class="glyphicon glyphicon-ok"></span> <strong>Upload video thành công</strong>
+            </div>
+
+            <!-- Form -->
+            <form action="post" class="form-horizontal" name="form" ng-submit="submit()" novalidate>
+
+                <!--ID-->
+
+                <div class="form-group">
+
+                    <label for="videoId" class="control-label col-md-2 col-sm-2">Video ID *</label>
+                    <div class="col-md-5 col-sm-5">
+                        <div class="input-group">
+                            <input name="videoId" type="text" class="form-control" placeholder="ID video có 10 ký tự trở lên"
+                                   ng-change="responseIdNotExist=false"
+                                   ng-model="videoData.data.attributes.youtubeId"
+                                   ng-disabled = "form.videoId.$dirty && form.videoId.$valid && existId"
+                                   ng-minlength="10"
+                                   ng-pattern="/^[a-zA-z0-9_-]+$/"
+                                   required>
+                            <span class="input-group-btn" ng-switch="existId">
+                                <button type="button" class="btn btn-primary"
+                                        ng-switch-when="false"
+                                        ng-disabled="!form.videoId.$dirty || (form.videoId.$dirty && form.videoId.$invalid)"
+                                        ng-click="validateIdWithYT()">Kiểm Tra</button>
+                                <button type="button" class="btn btn-success"
+                                        ng-switch-when="true"
+                                        ng-click="autoCompleteForm()">Tự Động</button>
+                            </span>
+                        </div>
+                        <!-- Alert input ID -->
+                        <div ng-show="form.videoId.$valid && !existId">
+                            <div class="text-info" ng-show="!responseIdNotExist">
+                                <span class="glyphicon glyphicon-info-sign"></span> ID hợp lệ, mời ấn kiểm tra để xác thực
+                            </div>
+                            <div class="text-danger" ng-show="responseIdNotExist">
+                                <span class="glyphicon glyphicon-remove"></span> Video này không tồn tại
+                            </div>
+                        </div>
+                        <div ng-show="form.videoId.$valid && existId" class="text-success">
+                            <span class="glyphicon glyphicon-ok"></span> Video được xác thực. Ấn Tự Động hoàn thành form với thông tin mặc định
+                        </div>
+                        <div ng-show="form.videoId.$dirty && form.videoId.$invalid" class="text-warning">
+                            <div ng-show="form.videoId.$error.required"><span class="glyphicon glyphicon-warning-sign"></span> ID không được bỏ trống</div>
+                            <div ng-show="form.videoId.$error.minlength"><span class="glyphicon glyphicon-warning-sign"></span> ID phải dài hơn 10 kí tự</div>
+                            <div ng-show="!form.videoId.$error.minlength && form.videoId.$error.pattern"><span class="glyphicon glyphicon-warning-sign"></span> ID không bao gồm các ký tự đặc biệt</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!--Name-->
+                <div class="form-group">
+                    <label for="name" class="control-label col-md-2 col-sm-2">Tên Video *</label>
+                    <div class="col-md-5 col-sm-5">
+                        <input name="name" type="text" class="form-control" placeholder="Tên Video có 3 - 50 ký tự" ng-model="videoData.data.attributes.name" ng-minlength="3" ng-maxlength="50" required>
+
+                        <!-- alert input Name -->
+
+                        <div ng-show="form.name.$invalid" class="text-warning">
+                            <div ng-show="form.name.$error.requied">
+                                <span class="glyphicon glyphicon-warning-sign"></span> Tên Video không được để trống
+                            </div>
+                            <div ng-show="form.name.$error.minlength || form.name.$error.maxlength">
+                                <span class="glyphicon glyphicon-warning-sign"></span> Tên Video có 3 - 50 ký tự
+                            </div>
+                        </div>
+                        <div ng-show="form.name.$valid" class="text-success">
+                            <span class="glyphicon glyphicon-ok"></span> Tên Video hợp lệ
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!--Description-->
+
+                <div class="form-group">
+                    <label for="description" class="control-label col-md-2 col-sm-2">Mô Tả</label>
+                    <div class="col-md-5 col-sm-5">
+                        <textarea name="description" class="form-control" placeholder="" rows="5" ng-model="videoData.data.attributes.description"></textarea>
+                    </div>
+                </div>
+
+                <!--Keywords-->
+
+                <div class="form-group">
+                    <label for="keywords" class="control-label col-md-2 col-sm-2">Từ Khóa</label>
+                    <div class="col-md-5 col-sm-5">
+                        <input type="text" name="keywords" class="form-control" placeholder="Từ khóa giúp tìm kiếm Video dễ hơn" ng-model="videoData.data.attributes.keywords">
+                    </div>
+                </div>
+
+
+
+                <!--The selector of Playlist-->
+
+                <div class="form-group">
+                    <label for="genre" class="control-label col-md-2 col-sm-2">Playlist *</label>
+                    <div class="col-md-5 col-sm-5">
+                        <select class="form-control" ng-model="videoData.data.attributes.playlistId" required>
+                            <option ng-repeat="playlist in playlistArray" value="{{playlist.id}}">{{playlist.attributes.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- Thumbnail -->
+
+                <div class="form-group">
+                    <label for="authorName" class="control-label col-md-2 col-sm-2">Link Ảnh Bìa</label>
+                    <div class="col-md-5 col-sm-5">
+                        <input name="authorName" type="text" class="form-control" ng-model="videoData.data.attributes.thumbnail" placeholder="Nếu để trống, ảnh bìa sẽ là thumbnail mặc định">
+                    </div>
+                </div>
+
+
+
+                <!--The Button-->
+
+                <div class="form-group">
+                    <div class="col-md-2 col-sm-2">
+                        &nbsp;
+                    </div>
+
+                    <div class="col-md-10 col-sm-10">
+                        <button type="button" class="btn btn-primary" ng-disabled="!form.$dirty || form.$dirty && form.$invalid || !existId" ng-click="submit()" ><span class="glyphicon glyphicon-send"></span> Submit</button>
+                        <button type="reset" class="btn btn-warning" ng-click="resetForm(videoData.data.attributes)"><span class="glyphicon glyphicon-refresh"></span> Reset</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="panel-footer">
+            <div>
+                <p>
+                    * Gợi ý: Nếu đường link Video là <b>'https://www.youtube.com/watch?v=rtviC6i42bc'</b>, ID video sẽ là <strong>'rtviC6i42bc'</strong>
+
+                </p>
+                <p>
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Những mục có dấu <strong class="text-danger">*</strong> không thể bỏ trống
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
