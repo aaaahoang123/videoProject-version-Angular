@@ -5,6 +5,16 @@
         <li class="active">Đăng ký</li>
     </ol>
 </section>
+<div class="container">
+    <div class="jumbotron text-center">
+        <h2 class="text-info">Rất tiếc!</h2>
+        <p class="text-warning">Bạn chưa đăng nhập! Mời bạn hãy đăng nhập để sử dụng những tính năng của chúng tôi.</p>
+        <p class="text-warning">Nếu bạn là thành viên mới, hay Đăng Ký để tham gia với chúng tôi ngay bây giờ</p>
+        <p class="text-warning glyphicon glyphicon-hand-down"></p>
+    </div>
+</div>
+
+
 
 <section class="container">
     <div class="panel panel-primary">
@@ -17,7 +27,7 @@
                 <span>{{responseDetail}}</span>
             </div>
             <div class="alert alert-success text-center" ng-show="alertSuccess">
-               <span class="glyphicon glyphicon-ok"></span> Bạn đã đăng ký tài khoản thành công, trở lại trang chủ sau 2 giây
+                <span class="glyphicon glyphicon-ok"></span> Bạn đã đăng ký tài khoản thành công, trở lại trang chủ sau 2 giây
             </div>
             <br>
 
@@ -25,25 +35,29 @@
 
                 <!--ID-->
 
-                <div class="form-group">
+                <div class="form-group has-feedback"
+                     ng-class="{'has-warning': signupForm.username.$dirty && signupForm.username.$invalid, 'has-success': signupForm.username.$dirty && signupForm.username.$valid}">
 
-                    <label for="username" class="control-label col-md-2 col-sm-2">Tài Khoản *</label>
+                    <label for="username" class="control-label col-md-2 col-sm-2">Tài Khoản <strong class="text-danger">*</strong></label>
                     <div class="col-md-10 col-sm-10">
                         <div class="col-md-6 col-sm-6 col-xs-10">
                             <input name="username" type="text" class="form-control" ng-model="userSignupData.data.attributes.username" placeholder="Tài Khoản có ít nhất 8 ký tự"
                                    ng-minlength="8"
                                    ng-pattern="/^[a-zA-Z0-9]+$/" required>
-                        </div>
-                        <span class="glyphicon glyphicon-ok text-success control-label"
-                              ng-show="signupForm.username.$dirty && signupForm.username.$valid">
+                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                  ng-show="signupForm.username.$dirty && signupForm.username.$valid">
 
-                        </span>
-                       <div ng-show="signupForm.username.$dirty && signupForm.username.$invalid" class="col-md-12 col-sm-12 col-xs-12 text-danger">
-                           <span class="glyphicon glyphicon-remove"></span>
-                           <span ng-show="signupForm.username.$error.required">Bạn chưa nhập tài khoản</span>
-                           <span ng-show="signupForm.username.$error.minlength">Tài khoản phải có ít nhất 8 ký tự</span>
-                           <span ng-show="signupForm.username.$error.pattern && !signupForm.username.$error.minlength">Tài khoản không được có ký tự đặc biệt</span>
-                       </div>
+                            </span>
+                            <span class="glyphicon glyphicon-warning-sign form-control-feedback"
+                                  ng-show="signupForm.username.$dirty && signupForm.username.$invalid">
+
+                            </span>
+                        </div>
+                        <div ng-show="signupForm.username.$dirty && signupForm.username.$invalid" class="col-md-12 col-sm-12 col-xs-12 text-warning">
+                            <span ng-show="signupForm.username.$error.required">Bạn chưa nhập tài khoản</span>
+                            <span ng-show="signupForm.username.$error.minlength">Tài khoản phải có ít nhất 8 ký tự</span>
+                            <span ng-show="signupForm.username.$error.pattern && !signupForm.username.$error.minlength">Tài khoản không được có ký tự đặc biệt</span>
+                        </div>
                     </div>
 
 
@@ -53,18 +67,25 @@
 
                 <!--password-->
 
-                <div class="form-group">
+                <div class="form-group has-feedback"
+                     ng-class="{'has-warning':signupForm.password.$dirty && signupForm.password.$invalid, 'has-success': signupForm.password.$valid}">
 
-                    <label for="password" class="control-label col-md-2 col-sm-2">Mật Khẩu *</label>
+                    <label for="password" class="control-label col-md-2 col-sm-2">Mật Khẩu <strong class="text-danger">*</strong></label>
                     <div class="col-md-10 col-sm-10">
                         <div class="col-md-6 col-sm-6 col-xs-10">
                             <input name="password" type="password" class="form-control" placeholder="Mật khẩu có ít nhất 8 ký tự"
                                    ng-model="userSignupData.data.attributes.password"
                                    ng-minlength="8" ng-pattern="/^[a-zA-Z0-9]+$/" required>
+                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                  ng-show="signupForm.password.$dirty && signupForm.password.$valid">
+
+                            </span>
+                            <span class="glyphicon glyphicon-warning-sign form-control-feedback"
+                                  ng-show="signupForm.password.$dirty && signupForm.password.$invalid">
+
+                            </span>
                         </div>
-                        <span class="glyphicon glyphicon-ok text-success control-label" ng-show="signupForm.password.$dirty && signupForm.password.$valid"></span>
-                        <div ng-show="signupForm.password.$dirty && signupForm.password.$invalid" class="col-md-12 col-sm-12 col-xs-12 text-danger">
-                            <span class="glyphicon glyphicon-remove"></span>
+                        <div ng-show="signupForm.password.$dirty && signupForm.password.$invalid" class="col-md-12 col-sm-12 col-xs-12 text-warning">
                             <span ng-show="signupForm.password.$error.required">
                                 Bạn chưa nhập mật khẩu
                             </span>
@@ -80,19 +101,25 @@
 
                 </div>
 
-                <!-- Retype pass -->
+                <!-- Confirm pass -->
 
-                <div class="form-group">
+                <div class="form-group has-feedback"
+                     ng-class="{'has-warning': signupForm.confirmPassword.$dirty && signupForm.confirmPassword.$error.notConfirm, 'has-success': signupForm.confirmPassword.$valid}">
 
-                    <label for="confirmPassWord" class="control-label col-md-2 col-sm-2">Nhập lại Mật khẩu *</label>
+                    <label for="confirmPassWord" class="control-label col-md-2 col-sm-2">Nhập lại Mật khẩu <strong class="text-danger">*</strong></label>
                     <div class="col-md-10 col-sm-10">
                         <div class="col-md-6 col-sm-6 col-xs-10">
                             <input name="confirmPassword" type="password" class="form-control" ng-model="confirmPassword" placeholder="Nhập lại mật khẩu" compare-to required>
+                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                  ng-show="signupForm.confirmPassword.$valid">
+                            </span>
+                            <span class="glyphicon glyphicon-warning-sign form-control-feedback"
+                                  ng-show="signupForm.confirmPassword.$dirty && signupForm.confirmPassword.$error.notConfirm">
+
+                            </span>
                         </div>
-                        <span class="glyphicon glyphicon-ok text-success control-label" ng-show="signupForm.confirmPassword.$valid"></span>
-                        <div ng-show="signupForm.confirmPassword.$dirty && signupForm.confirmPassword.$error.notConfirm" class="col-md-12 col-sm-12 col-xs-12 text-danger">
-                            <span class="glyphicon glyphicon-remove"></span>
-                                Nhập lại mật khẩu không trùng khớp
+                        <div ng-show="signupForm.confirmPassword.$dirty && signupForm.confirmPassword.$error.notConfirm" class="col-md-12 col-sm-12 col-xs-12 text-warning">
+                            Nhập lại mật khẩu không trùng khớp
                         </div>
                     </div>
 
@@ -100,16 +127,21 @@
                 </div>
                 <!-- Email -->
 
-                <div class="form-group">
+                <div class="form-group has-feedback"
+                     ng-class="{'has-warning': signupForm.email.$dirty && signupForm.email.$invalid, 'has-success': signupForm.email.$dirty && signupForm.email.$valid}">
 
-                    <label for="email" class="control-label col-md-2 col-sm-2">Email *</label>
+                    <label for="email" class="control-label col-md-2 col-sm-2">Email <strong class="text-danger">*</strong></label>
                     <div class="col-md-10 col-sm-10">
                         <div class="col-md-6 col-sm-6 col-xs-10">
                             <input name="email" type="email" class="form-control" ng-model="userSignupData.data.attributes.email" placeholder="Ví Dụ: abc@xyz.com" required>
+                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                  ng-show="signupForm.email.$dirty && signupForm.email.$valid">
+                            </span>
+                            <span class="glyphicon glyphicon-warning-sign form-control-feedback"
+                                  ng-show="signupForm.email.$dirty && signupForm.email.$invalid">
+                            </span>
                         </div>
-                        <span ng-show="signupForm.email.$dirty && signupForm.email.$valid" class="glyphicon glyphicon-ok text-success control-label"></span>
-                        <div ng-show="signupForm.email.$dirty && signupForm.email.$invalid" class="col-md-12 col-sm-12 col-xs-12 text-danger">
-                            <span class="glyphicon glyphicon-remove"></span>
+                        <div ng-show="signupForm.email.$dirty && signupForm.email.$invalid" class="col-md-12 col-sm-12 col-xs-12 text-warning">
                             <span ng-show="signupForm.email.$error.required">
                                 Bạn chưa nhập email
                             </span>
@@ -136,8 +168,9 @@
 
 
                 <!-- Birth day -->
-                <div class="form-group">
-
+                <div class="form-group has-feedback"
+                     ng-class="{'has-warning': signupForm.birthDay.$error.pattern || signupForm.birthDay.$error.minlength || signupForm.birthDay.$error.maxlength,
+                                'has-success': signupForm.birthDay.$dirty && signupForm.birthDay.$valid}">
                     <label for="birthDay" class="control-label col-md-2 col-sm-2 col-xs-12">Sinh Nhật</label>
                     <div class="col-md-10 col-sm-10">
                         <div class="col-md-6 col-sm-6 col-xs-10">
@@ -146,22 +179,26 @@
                                    ng-pattern="/^[0-9]+$/"
                                    ng-minlength="8"
                                    ng-maxlength="8">
+                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                  ng-show="signupForm.birthDay.$dirty && signupForm.birthDay.$valid">
+                            </span>
+                            <span class="glyphicon glyphicon-warning-sign form-control-feedback"
+                                  ng-show="signupForm.birthDay.$error.pattern || signupForm.birthDay.$error.minlength || signupForm.birthDay.$error.maxlength">
+                            </span>
                         </div>
-                        <div ng-show="signupForm.birthDay.$dirty && signupForm.birthDay.$invalid" class="col-md-12 col-sm-12 col-xs-12 text-danger">
-                            <span class="glyphicon glyphicon-remove"></span>
+                        <div ng-show="signupForm.birthDay.$dirty && signupForm.birthDay.$invalid" class="col-md-12 col-sm-12 col-xs-12 text-warning">
                             <span ng-show="signupForm.birthDay.$error.pattern || signupForm.birthDay.$error.minlength || signupForm.birthDay.$error.maxlength">
                                 Bạn hãy ghi ngày tháng đúng định dạng.
                             </span>
                         </div>
                     </div>
-
                 </div>
 
                 <!--The selector of Gender-->
 
-                <div class="form-group">
+                <div class="form-group has-success">
 
-                    <label for="gender" class="control-label col-md-2 col-sm-2">Giới tính *</label>
+                    <label for="gender" class="control-label col-md-2 col-sm-2">Giới tính <strong class="text-danger">*</strong></label>
                     <div class="col-md-10 col-sm-10">
                         <div class="col-md-6 col-sm-6 col-xs-10">
                             <select class="form-control" ng-model="userSignupData.data.attributes.gender" required>
@@ -216,11 +253,8 @@
                             <button type="reset" class="btn btn-default" ng-click="resetForm(userSignupData.data.attributes)"><span class="glyphicon glyphicon-refresh"></span> Reset</button>
                         </div>
                     </div>
-
                 </div>
             </form>
-
-
         </div>
         <div class="panel-footer">
             <strong>Những mục có dấu * bắt buộc phải nhập</strong>

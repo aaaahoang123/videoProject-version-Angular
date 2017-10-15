@@ -27,7 +27,10 @@
                                 <h3 ng-bind="playlist.attributes.name"></h3>
                                 <p ng-bind="playlist.attributes.description"></p>
                                 <p>
-                                    <button type="button" class="btn btn-primary" ng-click="changePageOfPlaylist(playlist.id)"><span class="glyphicon glyphicon-play"></span> Xem</button>
+                                    <button type="button" class="btn btn-primary"
+                                            ng-click="changePageOfPlaylist(playlist.id, playlist.attributes.name)">
+                                        <span class="glyphicon glyphicon-play"></span> Xem
+                                    </button>
                                     <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Xóa</button>
                                 </p>
                             </div>
@@ -50,19 +53,22 @@
                             <!-- Form -->
                             <form action="post" class="form-horizontal" name="form" novalidate>
                                 <!-- Name -->
-                                <div class="form-group">
+                                <div class="form-group has-feedback"
+                                     ng-class="{'has-warning': form.name.$error.minlength,
+                                                'has-success': form.name.$valid}">
                                     <label for="name" class="control-label col-md-2 col-sm-2">Tên Playlist</label>
                                     <div class="col-md-5 col-sm-5">
                                         <input name="name" type="text" class="form-control" placeholder="Tên Playlist của bạn"
                                                ng-model="playlistData.data.attributes.name"
                                                ng-minlength="7" required>
-                                        <div class="text-danger" ng-show="form.name.$error.minlength">
-                                            <span class="glyphicon glyphicon-remove"></span> Tên Playlist có ít nhất 7 ký tự
+                                        <span class="glyphicon glyphicon-ok form-control-feedback"
+                                              ng-show="form.name.$valid"></span>
+                                        <span class="glyphicon glyphicon-warning-sign form-control-feedback"
+                                              ng-show="form.name.$error.minlength"></span>
+                                        <div class="text-warning" ng-show="form.name.$error.minlength">
+                                            Tên Playlist có ít nhất 7 ký tự
                                         </div>
                                     </div>
-                                    <span class="glyphicon glyphicon-ok text-success"
-                                            ng-show="form.name.$valid"></span>
-
                                 </div>
                                 <!-- Description -->
                                 <div class="form-group">
@@ -108,11 +114,11 @@
                         <li role="presentation"><a href="#!uploadForm"><span class="glyphicon glyphicon-plus"></span> Thêm video</a></li>
                     </ul>
                     <br>
-
+                    <div class="well well-sm text-center">
+                        <h4 ng-repeat="playlist in playlistArray | filter:{id:choosenPlaylist.attributes.playlistId}">{{playlist.attributes.name}}</h4>
+                    </div>
                     <section class="row">
-
                         <ul class="list-unstyled video-list-thumbs row">
-
                             <li class="col-lg-3 col-md-4 col-sm-5 col-xs-6" ng-repeat="video in videosArray | filter:choosenPlaylist">
                                 <a href="#!watch?id={{video.id}}" title={{video.attributes.name}}>
                                     <img src={{video.attributes.thumbnail}} alt={{video.attributes.name}} height="130px" />
@@ -124,6 +130,23 @@
 
                     </section>
                 </div>
+        </div>
+    </section>
+    <!-- Alert when no Playlist -->
+    <section class="modal fade" id="alertNoPlaylist" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <div class="text-center text-info">
+                        <h4>Chào mừng bạn đến với MyTube</h4>
+                        <p>Dường như bạn vẫn chưa có playlist thì phải?</p>
+                        <p>Hãy tạo nhanh một playlist để tận hưởng những tính năng của chúng tôi nhé!</p>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </main>

@@ -1,4 +1,4 @@
-VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $rootScope) {
+VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $rootScope, $location) {
     /*Get the playlist*/
     $scope.choosenPlaylist = $rootScope.choosenPlaylist;
     if ($rootScope.choosenPlaylist === undefined) {
@@ -6,6 +6,7 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
             attributes: {}
         }
     }
+
     $http({
         method: 'GET',
         headers: {
@@ -13,13 +14,20 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
             'Authorization': localStorage.getItem('token')
         },
         url: playlistApi
-    }).then(function successCallback(response) {
+    }).
+    then(function successCallback(response) {
         $scope.playlistArray = response.data.data;
-        for (var i=0; i<$scope.playlistArray.length; i++) {
-            if ($scope.playlistArray[i].id === $scope.choosenPlaylist.attributes.playlistId) {
-                $scope.videoData.data.attributes.playlistId = $scope.choosenPlaylist.attributes.playlistId;
+        if ($scope.playlistArray === undefined) {
+            $('#alertModal').modal();
+        }
+        else {
+            for (var i=0; i<$scope.playlistArray.length; i++) {
+                if ($scope.playlistArray[i].id === $scope.choosenPlaylist.attributes.playlistId) {
+                    $scope.videoData.data.attributes.playlistId = $scope.choosenPlaylist.attributes.playlistId;
+                }
             }
         }
+
     }, function errorCallback(response) {
         console.log(response);
     });
@@ -31,13 +39,14 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
 
     $scope.validateIdWithYT = function () {
         var videoId = $scope.videoData.data.attributes.youtubeId;
-        var youtubeApi = 'https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id='+ videoId + '&key=AIzaSyBStdhzhkK8ne1tqsUz4A8j9axNi0NqE_M';
+        var youtubeApi = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+ videoId + '&key=AIzaSyBStdhzhkK8ne1tqsUz4A8j9axNi0NqE_M';
             $http({
                 method: 'GET',
                 url: youtubeApi
             }).then(function successCallback(response) {
-                if (response.data.pageInfo.totalResults !== 0) {
+                if (response.data.items.length !== 0) {
                     $scope.existId = true;
+                    $scope.ytCallbackData = response.data.items[0];
                 }
                 else {
                     $scope.responseIdNotExist = true;
@@ -63,6 +72,13 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
             }
         }
     };
+    $scope.urlYoutube = "";
+    $scope.convertToId = function() {
+        var pattern = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/i;
+        var id = $scope.urlYoutube.match(pattern);
+        $scope.videoData.data.attributes.youtubeId = id[5];
+    };
+    
     $scope.submit = function () {
         if ($scope.videoData.data.attributes.thumbnail === "") {
             $scope.videoData.data.attributes.thumbnail = 'https://i.ytimg.com/vi/' + $scope.videoData.data.attributes.youtubeId + '/hqdefault.jpg';
@@ -87,26 +103,31 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
     };
 
     $scope.autoCompleteForm = function () {
-        var videoId = $scope.videoData.data.attributes.youtubeId;
-        var youtubeApi = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+ videoId + '&key=AIzaSyBStdhzhkK8ne1tqsUz4A8j9axNi0NqE_M';
-        $http({
-            method: 'GET',
-            url: youtubeApi
-        }).then(function successCallback(response) {
-            console.log(response);
-            $scope.videoData.data.attributes.name = response.data.items[0].snippet.title;
-            $scope.videoData.data.attributes.description = response.data.items[0].snippet.description;
-            $scope.videoData.data.attributes.thumbnail = response.data.items[0].snippet.thumbnails.medium.url;
-            $scope.videoData.data.attributes.keywords = angular.toJson(response.data.items[0].snippet.tags, 3);
-
-        }, function errorCallback(response) {
-            console.log(response);
-        })
-
+            $scope.videoData.data.attributes.name = $scope.ytCallbackData.snippet.title;
+            $scope.videoData.data.attributes.description = $scope.ytCallbackData.snippet.description;
+            $scope.videoData.data.attributes.thumbnail = $scope.ytCallbackData.snippet.thumbnails.medium.url;
+            $scope.videoData.data.attributes.keywords = angular.toJson($scope.ytCallbackData.snippet.tags, 3);
     };
     $scope.resetForm = function (model) {
         $scope.existId = false;
         $scope.responseIdNotExist = false;
-        angular.copy({}, model);
+        $scope.videoData = {
+            "data":{
+                "type":"Video",
+                "attributes":{
+                    "youtubeId": "",
+                    "name": "",
+                    "description": "",
+                    "keywords": "",
+                    "playlistId": "",
+                    "thumbnail": ""
+                }
+            }
+        };
+        $scope.urlYoutube = "";
+    };
+    $scope.addPlaylist = function () {
+        $location.path('/playlist');
+        $rootScope.page = 'addPlaylist';
     }
 });

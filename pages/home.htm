@@ -70,7 +70,7 @@
                             <a href="#!watch?id={{arrayObject[0].id}}"><img
                                     src="https://i.ytimg.com/vi/{{arrayObject[0].attributes.youtubeId}}/hqdefault.jpg"
                                     alt="{{arrayObject[0].attributes.name}}"
-                                    class="img-responsive"></a>
+                                    class="img-responsive hover-flash"></a>
                         </div>
 
                         <div class="col-md-9">
@@ -84,7 +84,7 @@
                             <a href="#!watch?id={{arrayObject[1].id}}"><img
                                     src="https://i.ytimg.com/vi/{{arrayObject[1].attributes.youtubeId}}/hqdefault.jpg"
                                     alt="{{arrayObject[1].attributes.name}}"
-                                    class="img-responsive"></a>
+                                    class="img-responsive hover-flash"></a>
                         </div>
 
                         <div class="col-md-9">
@@ -98,7 +98,7 @@
                             <a href="#!watch?id={{arrayObject[2].id}}"><img
                                     src="https://i.ytimg.com/vi/{{arrayObject[2].attributes.youtubeId}}/hqdefault.jpg"
                                     alt="{{arrayObject[2].attributes.name}}"
-                                    class="img-responsive"></a>
+                                    class="img-responsive hover-flash"></a>
                         </div>
 
                         <div class="col-md-9">
@@ -116,21 +116,16 @@
 
     <hr>
 
-    <section class="row">
+     <ul class="list-unstyled video-list-thumbs row">
+         <li class="col-lg-3 col-sm-4 col-xs-12" ng-repeat="obj in arrayObject">
+            <a class="hover-flash" href="" title={{obj.attributes.name}} ng-click="playVideo(obj.attributes.youtubeId, obj.attributes.name, obj.id);" data-toggle="modal" data-target="#myModal">
+                <img src={{obj.attributes.thumbnail}} alt={{obj.attributes.name}}>
+                <h2 ng-bind="obj.attributes.name"></h2>
+                <span class="glyphicon glyphicon-play-circle"></span>
+            </a>
+        </li>
+    </ul>
 
-        <ul class="list-unstyled video-list-thumbs row">
-
-            <li class="col-lg-3 col-sm-4 col-xs-6" ng-repeat="obj in arrayObject">
-                <a href="" title={{obj.attributes.name}} ng-click="playVideo(obj.attributes.youtubeId, obj.attributes.name, obj.id);" data-toggle="modal" data-target="#myModal">
-
-                    <img src={{obj.attributes.thumbnail}} alt={{obj.attributes.name}} height="130px" />
-                    <h2 ng-bind="obj.attributes.name"></h2>
-                    <span class="glyphicon glyphicon-play-circle"></span>
-                </a>
-            </li>
-        </ul>
-
-    </section>
 
     <!--Modal for play Video-->
 
@@ -146,15 +141,34 @@
                 <div class="modal-body">
                     <div class="embed-responsive embed-responsive-16by9 video-container" id="video-player">
                         <iframe class="embed-responsive-item" id="videoEmbed" src="{{embedUrl}}" allowfullscreen></iframe>
-
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearModal()"><span class="glyphicon glyphicon-triangle-left"></span> <strong>Back</strong></button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearModal()"><span class="glyphicon glyphicon-triangle-left"></span> <strong>Đóng</strong></button>
                     <a href="#!watch?id={{videoId}}" class="btn btn-success"><span class="glyphicon glyphicon-play-circle"></span> <strong>Xem chi tiết</strong></a>
                 </div>
             </div>
 
+        </div>
+    </section>
+
+    <!-- Alert No Playlist -->
+    <section class="modal fade" id="alertNoPlaylist" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <div class="text-center text-info">
+                        <h4>Chào mừng bạn đến với MyTube</h4>
+                        <p>MyTube giúp bạn tổng hợp những video yêu thích vào Playlist riêng biệt.</p>
+                        <p>Chúng tôi nhận thấy bạn là thành viên mới! Hoặc bạn chưa từng tạo playlist tại MyTube</p>
+                        <p>Bạn cần tạo một Playlist trước khi thực hiện những chức năng khác!</p>
+                        <button type="button" class="btn btn-primary" ng-click="addPlaylist()">Tạo Playlist</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 

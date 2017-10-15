@@ -21,71 +21,107 @@
 
                 <!--ID-->
 
-                <div class="form-group">
+                <div class="form-group has-feedback"
+                     ng-class="{'has-warning': form.videoId.$dirty && form.videoId.$invalid,
+                                'has-success': form.videoId.$valid && existId,
+                                'has-error': responseIdNotExist}">
 
-                    <label for="videoId" class="control-label col-md-2 col-sm-2">Video ID *</label>
+                    <label for="videoId" class="control-label col-md-2 col-sm-2">Video ID <strong class="text-danger">*</strong></label>
                     <div class="col-md-5 col-sm-5">
-                        <div class="input-group">
+
                             <input name="videoId" type="text" class="form-control" placeholder="ID video có 10 ký tự trở lên"
                                    ng-change="responseIdNotExist=false"
                                    ng-model="videoData.data.attributes.youtubeId"
-                                   ng-disabled = "form.videoId.$dirty && form.videoId.$valid && existId"
+                                   ng-disabled = "form.videoId.$valid && existId"
                                    ng-minlength="10"
                                    ng-pattern="/^[a-zA-z0-9_-]+$/"
                                    required>
-                            <span class="input-group-btn" ng-switch="existId">
-                                <button type="button" class="btn btn-primary"
-                                        ng-switch-when="false"
-                                        ng-disabled="!form.videoId.$dirty || (form.videoId.$dirty && form.videoId.$invalid)"
-                                        ng-click="validateIdWithYT()">Kiểm Tra</button>
-                                <button type="button" class="btn btn-success"
-                                        ng-switch-when="true"
-                                        ng-click="autoCompleteForm()">Tự Động</button>
+                            <span class="glyphicon glyphicon-ok form-control-feedback"
+                                  ng-show="form.videoId.$valid && existId">
                             </span>
-                        </div>
+                            <span class="glyphicon glyphicon-warning-sign form-control-feedback"
+                                  ng-show="form.videoId.$dirty && form.videoId.$invalid">
+                            </span>
+                            <span class="glyphicon glyphicon-info-sign form-control-feedback text-info"
+                                  ng-show="form.videoId.$valid && !existId && !responseIdNotExist">
+                            </span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback"
+                                  ng-show="responseIdNotExist">
+                            </span>
+
+
                         <!-- Alert input ID -->
                         <div ng-show="form.videoId.$valid && !existId">
                             <div class="text-info" ng-show="!responseIdNotExist">
-                                <span class="glyphicon glyphicon-info-sign"></span> ID hợp lệ, mời ấn kiểm tra để xác thực
+                                ID hợp lệ, mời ấn kiểm tra để xác thực
                             </div>
                             <div class="text-danger" ng-show="responseIdNotExist">
-                                <span class="glyphicon glyphicon-remove"></span> Video này không tồn tại
+                                Video này không tồn tại
                             </div>
                         </div>
                         <div ng-show="form.videoId.$valid && existId" class="text-success">
-                            <span class="glyphicon glyphicon-ok"></span> Video được xác thực. Ấn Tự Động hoàn thành form với thông tin mặc định
+                            Video được xác thực. Ấn Tự Động để hoàn thành form với thông tin mặc định
                         </div>
                         <div ng-show="form.videoId.$dirty && form.videoId.$invalid" class="text-warning">
-                            <div ng-show="form.videoId.$error.required"><span class="glyphicon glyphicon-warning-sign"></span> ID không được bỏ trống</div>
-                            <div ng-show="form.videoId.$error.minlength"><span class="glyphicon glyphicon-warning-sign"></span> ID phải dài hơn 10 kí tự</div>
-                            <div ng-show="!form.videoId.$error.minlength && form.videoId.$error.pattern"><span class="glyphicon glyphicon-warning-sign"></span> ID không bao gồm các ký tự đặc biệt</div>
+                            <div ng-show="form.videoId.$error.required">ID không được bỏ trống</div>
+                            <div ng-show="form.videoId.$error.minlength">ID phải dài hơn 10 kí tự</div>
+                            <div ng-show="!form.videoId.$error.minlength && form.videoId.$error.pattern">ID không bao gồm các ký tự đặc biệt</div>
                         </div>
+                    </div>
+                    <div class="col-md-2 col-sm-2">
+                        <span class="control-label" ng-switch="existId">
+                            <button type="button" class="btn btn-primary"
+                                    ng-switch-when="false"
+                                    ng-disabled="form.videoId.$invalid"
+                                    ng-click="validateIdWithYT()">Kiểm Tra</button>
+                            <button type="button" class="btn btn-success"
+                                    ng-switch-when="true"
+                                    ng-click="autoCompleteForm()">Tự Động</button>
+                        </span>
                     </div>
 
                 </div>
+                <div class="form-group">
+                    <label for="video-url" class="control-label col-md-2 col-sm-2">Youtube Url </label>
+                    <div class="col-md-5 col-sm-5">
+                        <input type="text" name='video-url' class="form-control" placeholder="Bạn có thể lựa chọn nhập URL Youtube thay cho ID" 
+                                ng-model="urlYoutube"
+                                ng-change="convertToId(); responseIdNotExist=false"
+                                ng-disabled = "form.videoId.$valid && existId">
+                    </div>
+                </div>
 
                 <!--Name-->
-                <div class="form-group">
-                    <label for="name" class="control-label col-md-2 col-sm-2">Tên Video *</label>
+                <div class="form-group has-feedback"
+                     ng-class="{'has-success': form.name.$valid,
+                                'has-warning': form.name.$dirty && form.name.$invalid || !form.name.$error.required && form.name.$invalid}">
+                    <label for="name" class="control-label col-md-2 col-sm-2">Tên Video <strong class="text-danger">*</strong></label>
                     <div class="col-md-5 col-sm-5">
-                        <input name="name" type="text" class="form-control" placeholder="Tên Video có 3 - 50 ký tự" ng-model="videoData.data.attributes.name" ng-minlength="3" ng-maxlength="50" required>
+                        <input name="name" type="text" class="form-control" placeholder="Tên Video có 3 - 50 ký tự"
+                               ng-model="videoData.data.attributes.name"
+                               ng-minlength="3"
+                               ng-maxlength="50" required>
+                        <span class="glyphicon glyphicon-ok form-control-feedback"
+                              ng-show="form.name.$valid">
+                        </span>
+                        <span class="glyphicon glyphicon-warning-sign form-control-feedback"
+                              ng-show="!form.name.$error.required && form.name.$invalid || form.name.$dirty && form.name.$invalid">
+                        </span>
 
                         <!-- alert input Name -->
 
-                        <div ng-show="form.name.$invalid" class="text-warning">
-                            <div ng-show="form.name.$error.requied">
-                                <span class="glyphicon glyphicon-warning-sign"></span> Tên Video không được để trống
+                        <div ng-show="form.name.$dirty && form.name.$invalid" class="text-warning">
+                            <div ng-show="form.name.$error.required">
+                                Tên Video không được để trống
                             </div>
-                            <div ng-show="form.name.$error.minlength || form.name.$error.maxlength">
-                                <span class="glyphicon glyphicon-warning-sign"></span> Tên Video có 3 - 50 ký tự
-                            </div>
+                        </div>
+                        <div ng-show="form.name.$error.minlength || form.name.$error.maxlength" class="text-warning">
+                            Tên Video có 3 - 50 ký tự
                         </div>
                         <div ng-show="form.name.$valid" class="text-success">
-                            <span class="glyphicon glyphicon-ok"></span> Tên Video hợp lệ
+                            Tên Video hợp lệ
                         </div>
-
                     </div>
-
                 </div>
 
                 <!--Description-->
@@ -111,7 +147,7 @@
                 <!--The selector of Playlist-->
 
                 <div class="form-group">
-                    <label for="genre" class="control-label col-md-2 col-sm-2">Playlist *</label>
+                    <label for="genre" class="control-label col-md-2 col-sm-2">Playlist <strong class="text-danger">*</strong></label>
                     <div class="col-md-5 col-sm-5">
                         <select class="form-control" ng-model="videoData.data.attributes.playlistId" required>
                             <option ng-repeat="playlist in playlistArray" value="{{playlist.id}}">{{playlist.attributes.name}}</option>
@@ -137,8 +173,15 @@
                     </div>
 
                     <div class="col-md-10 col-sm-10">
-                        <button type="button" class="btn btn-primary" ng-disabled="!form.$dirty || form.$dirty && form.$invalid || !existId" ng-click="submit()" ><span class="glyphicon glyphicon-send"></span> Submit</button>
-                        <button type="reset" class="btn btn-warning" ng-click="resetForm(videoData.data.attributes)"><span class="glyphicon glyphicon-refresh"></span> Reset</button>
+                        <button type="button" class="btn btn-primary"
+                                ng-disabled="!form.$dirty || form.$dirty && form.$invalid || !existId"
+                                ng-click="submit()" >
+                            <span class="glyphicon glyphicon-send"></span> Thêm
+                        </button>
+                        <button type="reset" class="btn btn-default"
+                                ng-click="resetForm(videoData.data.attributes)">
+                            <span class="glyphicon glyphicon-refresh"></span> Reset
+                        </button>
                     </div>
                 </div>
             </form>
@@ -153,6 +196,24 @@
                     &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Những mục có dấu <strong class="text-danger">*</strong> không thể bỏ trống
                 </p>
             </div>
+        </div>
+    </div> <!-- End Panel -->
+
+    <!-- Modal for Alert -->
+    <div id="alertModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-sm">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="text-warning"><b>Cảnh báo</b></h4>
+                    <p class="text-primary"><strong>Bạn chưa tạo playlist. Hãy tạo playlist trước khi upload nhé</strong></p>
+                    <button type="button" class="btn btn-primary" ng-click="addPlaylist()">Tạo Playlist</button>
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>

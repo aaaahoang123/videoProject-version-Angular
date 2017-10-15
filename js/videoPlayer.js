@@ -1,4 +1,20 @@
-VideoPlayerApp.controller('VideoPlayerController', function ($scope, $http,$sce) {
+VideoPlayerApp.controller('VideoPlayerController', function ($scope, $http,$sce, $rootScope, $location) {
+    $http({
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('token')
+        },
+        url: playlistApi
+    }).then(function successCallBack(response) {
+        $scope.playlistArray = response.data.data;
+        if (response.data.data === undefined) {
+            $("#alertNoPlaylist").modal();
+        }
+    }, function errorCallBack(response) {
+        console.log(response);
+    });
+
     $http({
         method: 'GET',
         headers: {
@@ -16,12 +32,11 @@ VideoPlayerApp.controller('VideoPlayerController', function ($scope, $http,$sce)
                 $scope.arrayObject[i].attributes.createdTimeMLS = new Date($scope.arrayObject[i].attributes.createdTimeMLS).toLocaleDateString();
             }
         }
-
-        console.log(response);
     }, function errorCallBack(response) {
-
+        console.log(response);
     });
-    $scope.thelink = "";
+
+    $scope.embedUrl = "";
     $scope.playVideo = function (youtubeId, name, id) {
         $scope.embedUrl = $sce.trustAsResourceUrl('https://www.youtube.com/embed/' + youtubeId);
         $scope.videoName = name;
@@ -32,5 +47,10 @@ VideoPlayerApp.controller('VideoPlayerController', function ($scope, $http,$sce)
         $scope.VideoID = '';
         $scope.videoName = '';
         $scope.embedUrl = '';
+    };
+
+    $scope.addPlaylist = function () {
+        $location.path('/playlist');
+        $rootScope.page = 'addPlaylist';
     }
 });

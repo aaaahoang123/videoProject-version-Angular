@@ -2,6 +2,9 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
 
     /* The status of side bar */
     $scope.page = "playlist";
+    if ($rootScope.page !== undefined) {
+        $scope.page = $rootScope.page;
+    }
     $scope.switchPage = function (pageName) {
       $scope.page = pageName;
     };
@@ -9,11 +12,14 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
         return (switchName === $scope.page);
     };
     /* Filter the Playlist to display && Take the playlist Id to upload Video*/
-    $rootScope.choosenPlaylist = {
-        'attributes': {
-            'playlistId': ""
-        }
-    };
+    if ($rootScope.choosenPlaylist === undefined) {
+        $rootScope.choosenPlaylist = {
+            'attributes': {
+                'playlistId': ""
+            }
+        };
+    }
+
     $scope.changePageOfPlaylist = function(playlistId) {
         $scope.page = 'choosenPlaylistPage'; /*Open the switch of choosen playlist*/
         $rootScope.choosenPlaylist.attributes.playlistId = playlistId;
@@ -29,11 +35,14 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
         url: videoApi
     }).then(function successCallBack(response) {
         $scope.videosArray = response.data.data;
-        for (var i = 0; i < $scope.videosArray.length; i++) {
-            if ($scope.videosArray[i].attributes.thumbnail === "") {
-                $scope.videosArray[i].attributes.thumbnail = 'https://i.ytimg.com/vi/' + $scope.videosArray[i].attributes.youtubeId + '/mqdefault.jpg';
+        if ($scope.videosArray !== undefined) {
+            for (var i = 0; i < $scope.videosArray.length; i++) {
+                if ($scope.videosArray[i].attributes.thumbnail === "") {
+                    $scope.videosArray[i].attributes.thumbnail = 'https://i.ytimg.com/vi/' + $scope.videosArray[i].attributes.youtubeId + '/mqdefault.jpg';
+                }
             }
         }
+
     }, function errorCallBack(response) {
         alert('Tải video thất bại');
     });
@@ -56,23 +65,25 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
         },
         url: playlistApi
     }).then(function successCallback(response) {
-        if (response.data.data === undefined) {
+        $scope.playlistArray = response.data.data;
+        if ($scope.playlistArray === undefined) {
+            if ($rootScope.page === undefined) {
+                $("#alertNoPlaylist").modal(); /* Alert when no playlist exist, and change the switch to addPlaylist */
+                $scope.page = 'addPlaylist';
+            }
             $scope.playlistArray = [
                 {
                     attributes: {
-                        'thumbnailUrl': 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ2phHv9rCq-Aaq30y4SMD9rMauZinCFIOLlLxq_Pvg_Qcuje9',
+                        'thumbnailUrl': 'img/no-playlist.jpg',
                         'name': 'Chưa có playlist',
                         'description': 'Mời bạn thêm playlist'
                     }
                 }
             ];
         }
-        else {
-            $scope.playlistArray = response.data.data;
-        }
 
     }, function errorCallback(response) {
-        alert('tải về thất bại');
+        console.log(response);
     });
 
     /* Upload a playlist*/
@@ -99,6 +110,7 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
             data: $scope.playlistData
         }).then(function successCallback(response) {
             $scope.uploadSuccess = true;
+            $rootScope.page = 'playlist';
             $timeout(function () {
                 $route.reload();
             }, 1200);
@@ -110,6 +122,4 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
     $scope.resetForm = function () {
         angular.copy({}, $scope.playlistData);
     }
-
-
 });

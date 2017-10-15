@@ -3,14 +3,14 @@
 <head>
   <script src="js/angular.min.js"></script>
   <script src="js/angular-route.js"></script>
-  <script src="js/app.js"></script>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Video player Assignment</title>
-
-	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MyTube: Mai Túp</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/Footer-white.css">
 </head>
 
 <body>
@@ -30,13 +30,12 @@
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav" id="main-menu">
         <li ng-class="{active:isActivenavbar('/')}"><a href="#/!"><span class="glyphicon glyphicon-home"></span> Trang Chủ <span class="sr-only">(current)</span></a></li>
         <li class="dropdown">
           <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Chức Năng <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li ng-class="{active:isActivenavbar('/uploadForm')}"><a href="#!uploadForm"><span class="glyphicon glyphicon-cloud-upload"></span>    Tải Lên</a></li>
-            <li><a href="#!watch?id=1507891985001"><span class="glyphicon glyphicon-cloud-download"></span>   Tải Xuống</a></li>
+            <li ng-class="{active:isActivenavbar('/uploadForm')}"><a href="#!uploadForm"><span class="glyphicon glyphicon-plus"></span>    Thêm Video</a></li>
             <li ng-class="{active:isActivenavbar('/playlist')}"><a href="#!playlist"><span class="glyphicon glyphicon-th-list"></span>    Playlist</a></li>
           </ul>
         </li>
@@ -51,14 +50,19 @@
         </div>
       </form>
 
-      <ul class="nav navbar-nav navbar-right" ng-show="!signedInStatus">
-        <li ng-class="{active:isActivenavbar('/signup')}"><a href="#!signup"><span class="glyphicon glyphicon-user"></span> Đăng Ký</a></li>
-
-        <li class="dropdown">
-          <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-log-in"></span> Đăng Nhập <span class="caret"></span></a>
+      <!-- Switch with status of signed in -->
+      <div ng-switch="signedIn" ng-show="loadedLocalStorage">
+        <ul class="nav navbar-nav navbar-right">
+          <!-- Signin Form or Username -->
+        <li class="dropdown" ng-switch="signedIn">
+          <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <span ng-class="glyphiconSigninOrUserData"></span>
+            <span ng-bind="signinOrUserName"></span>
+            <span class="caret"></span>
+          </a>
 
           <!--Login Form-->
-            <ul class="dropdown-menu" id="loginForm">
+            <ul class="dropdown-menu" id="loginForm" ng-switch-when="false">
               <li>
                 <div class="row">
                   <div class="col-md-12">
@@ -80,11 +84,6 @@
                       <div class="form-group">
                         <button type="button" class="btn btn-primary btn-block" ng-click="signin()">Đăng nhập</button>
                       </div>
-                      <div class="checkbox">
-                        <label>
-                          <input type="checkbox" ng-model="rememberMe">Ghi nhớ
-                        </label>
-                      </div>
                     </form>
                   </div>
                   <div class="text-center">
@@ -92,16 +91,30 @@
                   </div>
                 </div>
               </li>
-            </ul>
-          <!--End login Form-->
-        </li>
+            </ul><!--End login Form-->
+          <ul class="dropdown-menu" ng-switch-when="true">
+            <li><a href=""><span class="glyphicon glyphicon-user"></span> Tài khoản: <span ng-bind="signinOrUserName"></span></a></li>
+            <li><a href=""><span class="glyphicon glyphicon-time"></span> Ngày đăng nhập: <span ng-bind="signinTime"></span></a></li>
+            <li>
+              <a href="" title="Chúng tôi sẽ giữ tài khoản của bạn đăng nhập trong 7 ngày, sau 7 ngày, bạn vui lòng chủ động đăng nhập lại">
+                <span class="glyphicon glyphicon-repeat"></span>  Ngày đăng nhập lại:
+                <span ng-bind="expireTime"></span>
+              </a>
+            </li>
+          </ul>
+          </li>
+          <!-- Signup or Signout -->
+          <li ng-class="{active:isActivenavbar('/signup')}">
+            <a href="" ng-click="controlSignupOrSignOut()">
+              <span ng-class="glyphiconSignupOrSignout"></span>
+              <span ng-bind="signupOrSignout"></span>
+            </a>
+          </li>
       </ul> <!-- Login form and signup link -->
 
       <!-- User data when signed in -->
-      <ul class="nav navbar-nav navbar-right" ng-show="signedInStatus">
-        <li><a href=""><span class="glyphicon glyphicon-user"></span> <span ng-bind="signedInUsername"></span></a></li>
-        <li><a href="" ng-click="signOut()"><span class="glyphicon glyphicon-log-out"></span> Đăng xuất</a></li>
-      </ul>
+      </div>
+  
 
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
@@ -113,25 +126,32 @@
 </ng-view>
 <!-- The Content -->
 
-<footer class="navbar navbar-default navbar-fixed-bottom">
+<footer id="myFooter">
   <div class="container">
-    <p class="navbar-text pull-left">
-      © 2017 - Đỗ Hoàng Product
-    </p>
-
-    <a href="https://www.facebook.com/profile.php?id=100005276024152" class="navbar-btn btn-primary btn pull-right" target="_blank">
-      <span class="glyphicon glyphicon-thumbs-up"></span>  Add Friend on FaceBook</a>
+    <ul>
+      <li><a href="">MyTube</a></li>
+      <li><a href="">Liên Hệ</a></li>
+      <li><a href="">Nhận xét</a></li>
+      <li><a href="">Điều khoản</a></li>
+    </ul>
+    <p class="footer-copyright">Đỗ Hoàng - C1707 © 2017</p>
   </div>
-
+  <div class="footer-social">
+    <a href="" class="social-icons"><i class="fa fa-facebook"></i></a>
+    <a href="" class="social-icons"><i class="fa fa-google-plus"></i></a>
+    <a href="" class="social-icons"><i class="fa fa-twitter"></i></a>
+  </div>
 </footer>
-	
-	<script src="js/jquery.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-    <script src="js/signUp.js"></script>
-    <script src="js/upload.js"></script>
-    <script src="js/videoPlayer.js"></script>
-    <script src="js/navbar.js"></script>
-    <script src="js/playlist.js"></script>
-    <script src="js/watch-page.js"></script>
+
+<script src="js/app.js"></script>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/signUp.js"></script>
+<script src="js/upload.js"></script>
+<script src="js/videoPlayer.js"></script>
+<script src="js/playlist.js"></script>
+<script src="js/watch-page.js"></script>
+
 </body>
 </html>

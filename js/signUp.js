@@ -1,4 +1,8 @@
-VideoPlayerApp.controller('signupController', function($scope, $http, $timeout) {
+VideoPlayerApp.controller('signupController', function($scope, $http, $timeout, $location) {
+    $scope.userToken = localStorage.getItem('token');
+    if ($scope.userToken !== null) {
+       $location.path('/alertSignUp');
+    }
     $scope.alertSuccess = false;
     $scope.alertError = false;
     $scope.genders = [
@@ -43,7 +47,6 @@ VideoPlayerApp.controller('signupController', function($scope, $http, $timeout) 
             }).then(function successCallback(response) {
                 $scope.alertSuccess = true;
                 $scope.alertError = false;
-                console.log($scope.signinData);
                 $http({
                     method: 'POST',
                     url: authenticationApi,
@@ -51,6 +54,10 @@ VideoPlayerApp.controller('signupController', function($scope, $http, $timeout) 
                 }).then(function successCallback(response) {
                     localStorage.setItem('username', response.config.data.data.attributes.username);
                     localStorage.setItem('token', response.data.data.attributes.secretToken);
+                    var signinTime = new Date(response.data.data.attributes.createdTimeMLS).toLocaleDateString();
+                    var expireTime = new Date(response.data.data.attributes.expiredTimeMLS).toLocaleDateString();
+                    localStorage.setItem('signinTime', signinTime);
+                    localStorage.setItem('expireTime', expireTime);
                     $timeout(function () {
                         window.location.href = "index.html";
                     }, 2000);
@@ -62,7 +69,6 @@ VideoPlayerApp.controller('signupController', function($scope, $http, $timeout) 
             }, function errorCallback(response) {
                 $scope.alertError = true;
                 $scope.responseDetail = response.data.errors[0].detail;
-                console.log(response.data.errors[0].detail);
             });
         }, 500);
 
