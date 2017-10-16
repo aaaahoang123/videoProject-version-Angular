@@ -1,5 +1,7 @@
 VideoPlayerApp.controller('signupController', function($scope, $http, $timeout, $location) {
     $scope.userToken = localStorage.getItem('token');
+    $('#alertModal').modal();
+    /*Open modal when signup*/
     if ($scope.userToken !== null) {
        $location.path('/alertSignUp');
     }
@@ -10,7 +12,17 @@ VideoPlayerApp.controller('signupController', function($scope, $http, $timeout, 
         {'value': '0', 'label': 'Nữ'},
         {'value': '2', 'label': 'Khác'}
     ];
-
+    /*Data to signin*/
+    $scope.signinData = {
+        "data": {
+            "type": "MemberLogin",
+            "attributes": {
+                "username": "",
+                "password": ""
+            }
+        }
+    };
+    /*Data to signup*/
     $scope.userSignupData = {
         "data": {
             "type": "Member",
@@ -21,16 +33,6 @@ VideoPlayerApp.controller('signupController', function($scope, $http, $timeout, 
                 "birthDay": "",
                 "fullName": "",
                 "avatar": "",
-                "password": ""
-            }
-        }
-    };
-
-    $scope.signinData = {
-        "data": {
-            "type": "MemberLogin",
-            "attributes": {
-                "username": "",
                 "password": ""
             }
         }
