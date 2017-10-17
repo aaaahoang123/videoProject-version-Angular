@@ -25,9 +25,8 @@
                             <div class="col-md-8 col-sm-7 col-xs-12">
                                 <h4><strong>{{videoData.attributes.name}}</strong></h4>
                                 <p><strong>Xuất bản:</strong> {{videoData.attributes.createdTimeMLS}}</p>
-                                <p><strong>Playlist:</strong> <span ng-repeat="playlist in playlistArray | filter:{id:videoData.attributes.playlistId}"
-                                                                    ng-show="completeLoadingVideoData"> <a href="" ng-bind="playlist.attributes.name"
-                                                                                                                    ng-click="linkToPlaylist(playlist.id)"></a></span></p>
+                                <p><strong>Playlist:</strong> <span ng-show="completeLoadingVideoData"> <a href="" ng-bind="videoData.attributes.playlistId"
+                                                                                                                    ng-click="linkToPlaylist(videoData.attributes.playlistId)"></a></span></p>
                             </div>
                             <div class="col-md-4 col-sm-7 col-xs-12">
                                 <div class="btn-group pull-right">
@@ -40,7 +39,9 @@
                                 </div>
                             </div>
                         </div>
-                        <pre><strong>Mô tả:</strong> {{videoData.attributes.description}}</pre>
+                        <span style="white-space: pre-line"><strong>Mô tả:</strong> {{videoData.attributes.description}}</span>
+                        <br>
+                        <hr>
                         <br>
                         <pre><strong>Từ khóa: </strong> {{videoData.attributes.keywords}}</pre>
                 </div>
@@ -57,15 +58,6 @@
                     </div>
                     <div class="col-md-6 col-sm-12 col-xs-8">
                         <p><a ng-href="#!watch?id={{video.id}}"><strong ng-bind="video.attributes.name"></strong></a></p>
-                        <div ng-repeat="playlist in playlistArray | filter:{id:video.attributes.playlistId}">
-                            <a href="" ng-click="linkToPlaylist(playlist.id)" style="text-decoration: none;">
-                                <p class="text-warning">
-                                    <strong>Playlist:</strong> <span ng-show="completeLoadingVideoData"> {{playlist.attributes.name}}</span>
-                                </p>
-                            </a>
-                        </div>
-
-
                     </div>
             </div>
         </div>

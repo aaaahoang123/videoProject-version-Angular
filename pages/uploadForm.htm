@@ -150,6 +150,7 @@
                     <label for="genre" class="control-label col-md-2 col-sm-2">Playlist <strong class="text-danger">*</strong></label>
                     <div class="col-md-5 col-sm-5">
                         <select class="form-control" ng-model="videoData.data.attributes.playlistId" required>
+                            <option value="0">Chung</option>
                             <option ng-repeat="playlist in playlistArray" value="{{playlist.id}}">{{playlist.attributes.name}}</option>
                         </select>
                     </div>

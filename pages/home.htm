@@ -1,4 +1,4 @@
-<main class="container">
+<main class="container res-container">
     <section>
         <ol class="breadcrumb">
             <li class="active">Trang chủ</li>
@@ -66,66 +66,103 @@
                     <!--The Video-->
 
                     <div class="row">
-                        <div class="col-md-3">
-                            <a href="#!watch?id={{arrayObject[0].id}}"><img
-                                    src="https://i.ytimg.com/vi/{{arrayObject[0].attributes.youtubeId}}/hqdefault.jpg"
-                                    alt="{{arrayObject[0].attributes.name}}"
-                                    class="img-responsive hover-flash"></a>
+                        <div class="col-md-3 col-sm-6 col-ms-7 col-xs-12">
+                            <a href="#!watch?id={{videosArray[0].id}}"><img
+                                    src="https://i.ytimg.com/vi/{{videosArray[0].attributes.youtubeId}}/hqdefault.jpg"
+                                    alt="{{videosArray[0].attributes.name}}"
+                                    class="hover-flash" style="width: 100%"></a>
                         </div>
 
-                        <div class="col-md-9">
-                            <a href="#!watch?id={{arrayObject[0].id}}"><h4 ng-bind="arrayObject[0].attributes.name"></h4></a>
-                            <p><strong>Xuất bản:</strong> {{arrayObject[0].attributes.createdTimeMLS}}</p>
+                        <div class="col-md-9 col-sm-6 col-ms-5 col-xs-12">
+                            <a href="#!watch?id={{videosArray[0].id}}"><h4 ng-bind="videosArray[0].attributes.name"></h4></a>
+                            <p><strong>Xuất bản:</strong> {{videosArray[0].attributes.createdTimeMLS}}</p>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-3">
-                            <a href="#!watch?id={{arrayObject[1].id}}"><img
-                                    src="https://i.ytimg.com/vi/{{arrayObject[1].attributes.youtubeId}}/hqdefault.jpg"
-                                    alt="{{arrayObject[1].attributes.name}}"
+                        <div class="col-md-3 col-sm-6 col-ms-7 col-xs-12">
+                            <a href="#!watch?id={{videosArray[1].id}}"><img
+                                    src="https://i.ytimg.com/vi/{{videosArray[1].attributes.youtubeId}}/hqdefault.jpg"
+                                    alt="{{videosArray[1].attributes.name}}"
                                     class="img-responsive hover-flash"></a>
                         </div>
 
-                        <div class="col-md-9">
-                            <a href="#!watch?id={{arrayObject[1].id}}"><h4 ng-bind="arrayObject[1].attributes.name"></h4></a>
-                            <p><strong>Xuất bản:</strong> {{arrayObject[1].attributes.createdTimeMLS}}</p>
+                        <div class="col-md-9 col-sm-6 col-ms-5 col-xs-12">
+                            <a href="#!watch?id={{videosArray[1].id}}"><h4 ng-bind="videosArray[1].attributes.name"></h4></a>
+                            <p><strong>Xuất bản:</strong> {{videosArray[1].attributes.createdTimeMLS}}</p>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-md-3">
-                            <a href="#!watch?id={{arrayObject[2].id}}"><img
-                                    src="https://i.ytimg.com/vi/{{arrayObject[2].attributes.youtubeId}}/hqdefault.jpg"
-                                    alt="{{arrayObject[2].attributes.name}}"
+                        <div class="col-md-3 col-sm-6 col-ms-7 col-xs-12">
+                            <a href="#!watch?id={{videosArray[2].id}}"><img
+                                    src="https://i.ytimg.com/vi/{{videosArray[2].attributes.youtubeId}}/hqdefault.jpg"
+                                    alt="{{videosArray[2].attributes.name}}"
                                     class="img-responsive hover-flash"></a>
                         </div>
-
-                        <div class="col-md-9">
-                            <a href="#!watch?id={{arrayObject[2].id}}"><h4 ng-bind="arrayObject[2].attributes.name"></h4></a>
-                            <p><strong>Xuất bản:</strong> {{arrayObject[2].attributes.createdTimeMLS}}</p>
+                        <div class="col-md-9 col-sm-6 col-ms-5 col-xs-12">
+                            <a href="#!watch?id={{videosArray[2].id}}"><h4 ng-bind="videosArray[2].attributes.name"></h4></a>
+                            <p><strong>Xuất bản:</strong> {{videosArray[2].attributes.createdTimeMLS}}</p>
                         </div>
                     </div>
-
                 </div>
-
             </div>
         </div>
 
-    </header>
+    </header><hr>
 
-    <hr>
-
-     <ul class="list-unstyled video-list-thumbs row">
-         <li class="col-lg-3 col-sm-4 col-xs-12" ng-repeat="obj in arrayObject">
+    <!-- <ul class="list-unstyled video-list-thumbs row">
+         <li class="col-lg-3 col-sm-4 col-xs-12 col-ms-6" ng-repeat="obj in arrayObject">
             <a class="hover-flash" href="" title={{obj.attributes.name}} ng-click="playVideo(obj.attributes.youtubeId, obj.attributes.name, obj.id);" data-toggle="modal" data-target="#myModal">
                 <img src={{obj.attributes.thumbnail}} alt={{obj.attributes.name}}>
                 <h2 ng-bind="obj.attributes.name"></h2>
                 <span class="glyphicon glyphicon-play-circle"></span>
             </a>
         </li>
-    </ul>
+    </ul> -->
+    <div>
+        <a href="" style="text-decoration: none" class="hover-flash" ng-click="linkToPlaylist(0, 'Playlist Chung')">
+          <b class="text-primary" style="font-size: 16px;">Chung </b><span class="glyphicon glyphicon-forward"></span>
+        </a>
+        <br> <br>
+        <div class="row display-flex">
+            <div class="col-xs-6 col-md-3" ng-repeat="video in videosArray | limitTo: 4">
+                <a class="hover-flash thumbnail" href=""
+                   ng-click="playVideo(video.attributes.youtubeId, video.attributes.name, video.id);"
+                   data-toggle="modal" data-target="#myModal">
+                    <img ng-src="{{video.attributes.thumbnail}}" alt={{video.attributes.name}}>
+                    <span class="glyphicon glyphicon-play thumbnail-play-icon"></span>
+                </a>
+                <a href="" class="caption" style="text-decoration: none; color: black;"><strong ng-bind="video.attributes.name"></strong></a>
+                <p>Xuất bản: <span ng-bind="video.attributes.createdTimeMLS"></span></p>
+            </div>
+        </div>
+        <br>
+    </div>
 
+    <div ng-repeat="playlist in filterPlaylistNotUndefined(playlistArray)">
+        <a href="" style="text-decoration: none" class="hover-flash" ng-click="linkToPlaylist(playlist.id, playlist.attributes.name)">
+            </h4><b ng-bind="playlist.attributes.name" class="text-primary hover-flash" style="font-size: 16px;"></b> <span class="glyphicon glyphicon-forward"></span>
+        </a>
+        <br><br>
+        <div class="row display-flex">
+            <div class="col-xs-6 col-md-3" ng-repeat="video in filterVideoForPlaylist(playlist) | limitTo: 4">
+                <a class="hover-flash thumbnail" href=""
+                   ng-click="playVideo(video.attributes.youtubeId, video.attributes.name, video.id);"
+                   data-toggle="modal" data-target="#myModal">
+                    <img ng-src="{{video.attributes.thumbnail}}" alt={{video.attributes.name}}>
+                    <span class="glyphicon glyphicon-play thumbnail-play-icon"></span>
+                </a>
+                <a href="" class="caption" style="text-decoration: none; color: black;"
+                   ng-click="playVideo(video.attributes.youtubeId, video.attributes.name, video.id);"
+                   data-toggle="modal" data-target="#myModal">
+                    <strong ng-bind="video.attributes.name"></strong>
+                </a>
+                <p>Xuất bản: <span ng-bind="video.attributes.createdTimeMLS"></span></p>
+            </div>
+        </div>
+        <br>
+    </div>
 
     <!--Modal for play Video-->
 
@@ -148,31 +185,6 @@
                     <a href="#!watch?id={{videoId}}" class="btn btn-success"><span class="glyphicon glyphicon-play-circle"></span> <strong>Xem chi tiết</strong></a>
                 </div>
             </div>
-
         </div>
     </section>
-
-    <!-- Alert No Playlist -->
-    <section class="modal fade" id="alertNoPlaylist" role="dialog">
-        <div class="modal-dialog modal-sm">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <div class="text-center text-info">
-                        <h4>Chào mừng bạn đến với MyTube</h4>
-                        <p>MyTube giúp bạn tổng hợp những video yêu thích vào Playlist riêng biệt.</p>
-                        <p>Chúng tôi nhận thấy bạn là thành viên mới! Hoặc bạn chưa từng tạo playlist tại MyTube</p>
-                        <p>Bạn cần tạo một Playlist trước khi thực hiện những chức năng khác!</p>
-                        <button type="button" class="btn btn-primary" ng-click="addPlaylist()">Tạo Playlist</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
-
-
 </main>

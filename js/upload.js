@@ -3,7 +3,9 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
     $scope.choosenPlaylist = $rootScope.choosenPlaylist;
     if ($rootScope.choosenPlaylist === undefined) {
         $scope.choosenPlaylist = {
-            attributes: {}
+            attributes: {
+
+            }
         }
     }
 
@@ -21,10 +23,11 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
             $('#alertModal').modal();
         }
         else {
-            for (var i=0; i<$scope.playlistArray.length; i++) {
-                if ($scope.playlistArray[i].id === $scope.choosenPlaylist.attributes.playlistId) {
-                    $scope.videoData.data.attributes.playlistId = $scope.choosenPlaylist.attributes.playlistId;
-                }
+            if ($rootScope.choosenPlaylist !== undefined) {
+                $scope.videoData.data.attributes.playlistId = $rootScope.choosenPlaylist.attributes.playlistId;
+            }
+            else {
+                $scope.videoData.data.attributes.playlistId = "0";
             }
         }
 

@@ -18,20 +18,6 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
         }
     };
 
-    /* Get the array Playlist for Edit*/
-    $http({
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token')
-        },
-        url: playlistApi
-    }).then(function successCallBack(response) {
-        $scope.playlistArray = response.data.data;
-    }, function errorCallBack(response) {
-        console.log('Error: ' + response.data.errors[0].code + ' ' + response.data.errors[0].title + ' ' + response.data.errors[0].detail);
-    });
-
     /*Get video Data*/
     $http({
         method: 'GET',
@@ -85,6 +71,19 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
     }, function errorCallback(response) {
         console.log('Error: ' + response.data.errors[0].code + ' ' + response.data.errors[0].title + ' ' + response.data.errors[0].detail);
     });
+/*Get all the playlist for edit*/
+    $http({
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('token')
+        },
+        url: playlistApi
+    }).then(function successCallback(response) {
+        $scope.playlistArray = response.data.data
+    }, function errorCallback(response) {
+        console.log('Error: ' + response.data.errors[0].code + ' ' + response.data.errors[0].title + ' ' + response.data.errors[0].detail);
+    });
 
     /*Edit Function*/
 // Edit
@@ -102,7 +101,6 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
             data: $scope.editData
         }).then(function successCallback(response) {
             $scope.editSuccess = true;
-            console.log(response);
             $timeout(function () {
                 $route.reload();
             }, 1000);
@@ -144,11 +142,7 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
             $scope.responseEditError = response;
         });
     };
-    $rootScope.choosenPlaylist = {
-        attributes: {
-            playlistId: ''
-        }
-    };
+
 // Auto Complete
     $scope.autoComplete = function () {
         var videoId = $scope.editData.data.attributes.youtubeId;
@@ -173,9 +167,17 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
             console.log(response);
         })
     };
+
+    $rootScope.choosenPlaylist = {
+        attributes: {
+            playlistId: '',
+            name: ''
+        }
+    };
     $scope.linkToPlaylist = function (plId) {
         $rootScope.page = 'choosenPlaylistPage';
         $rootScope.choosenPlaylist.attributes.playlistId = plId;
+        $rootScope.choosenPlaylist.attributes.name = plId;
         $timeout(function () {
             $location.path('/playlist');
         }, 200);

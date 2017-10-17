@@ -1,4 +1,4 @@
-<main class="container">
+<main class="container res-container">
     <section>
         <ol class="breadcrumb">
             <li><a href="#/">Trang chủ</a></li>
@@ -18,23 +18,25 @@
         <div class="col-md-10 col-sm-8" ng-switch="page">
             <!-- Playlist -->
 
-            <div ng-switch-when="playlist">
+            <div ng-switch-when="playlist" ng-init="getAllPlaylist()">
                 <div class="row display-flex">
-                    <div class="col-sm-6 col-md-4 col-xs-12" ng-repeat="playlist in playlistArray">
-                        <div class="thumbnail">
-                            <img src={{playlist.attributes.thumbnailUrl}} alt={{playlist.attributes.name}} title={{playlist.attributes.description}}>
+                    <div class="col-sm-6 col-md-4 col-ms-6 col-xs-12" ng-repeat="playlist in playlistArray">
+                        <div class="thumbnail crop">
+                             <img src={{playlist.attributes.thumbnailUrl}} alt={{playlist.attributes.name}} title={{playlist.attributes.description}}>
+                        </div>
+
                             <div class="caption">
                                 <h3 ng-bind="playlist.attributes.name"></h3>
                                 <p ng-bind="playlist.attributes.description"></p>
                                 <p>
                                     <button type="button" class="btn btn-primary"
-                                            ng-click="changePageOfPlaylist(playlist.id, playlist.attributes.name)">
+                                            ng-click="getVideoByPlaylistId(playlist.id, playlist.attributes.name)">
                                         <span class="glyphicon glyphicon-play"></span> Xem
                                     </button>
-                                    <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span> Xóa</button>
+                                    <button type="button" class="btn btn-danger" 
+                                            ng-click="deletePlaylist(playlist.id)"><span class="glyphicon glyphicon-remove"></span> Xóa</button>
                                 </p>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -110,24 +112,32 @@
                 <div ng-switch-when="choosenPlaylistPage">
                     <ul class="nav nav-pills">
                         <li role="presentation"><a href="" ng-click="switchPage('playlist')"><span class="glyphicon glyphicon-chevron-left"></span> Back</a></li>
-                        <li role="presentation" class="active"><a href="#"><span class="glyphicon glyphicon-play"></span> Playlist</a></li>
+                        <li role="presentation" class="active"><a href=""><span class="glyphicon glyphicon-play"></span> Playlist</a></li>
                         <li role="presentation"><a href="#!uploadForm"><span class="glyphicon glyphicon-plus"></span> Thêm video</a></li>
                     </ul>
                     <br>
                     <div class="well well-sm text-center">
-                        <h4 ng-repeat="playlist in playlistArray | filter:{id:choosenPlaylist.attributes.playlistId}">{{playlist.attributes.name}}</h4>
+                        <h4>{{playlistName}}</h4>
                     </div>
-                    <section class="row">
-                        <ul class="list-unstyled video-list-thumbs row">
-                            <li class="col-lg-3 col-md-4 col-sm-5 col-xs-6" ng-repeat="video in videosArray | filter:choosenPlaylist">
-                                <a href="#!watch?id={{video.id}}" title={{video.attributes.name}}>
-                                    <img src={{video.attributes.thumbnail}} alt={{video.attributes.name}} height="130px" />
-                                    <h2 ng-bind="video.attributes.name"></h2>
-                                    <span class="glyphicon glyphicon-play-circle"></span>
+                    <section class="row display-flex">
+                        <div class="col-xs-12 col-md-4 col-sm-6 col-ms-6" ng-repeat="video in videosArray">
+                            <div class="thumbnail" style="position: relative">
+                                <img class="hover-flash" ng-src={{video.attributes.thumbnail}} alt="{{video.attributes.name}}">
+                                <a href="#!watch?id={{video.id}}">
+                                    <span class="glyphicon glyphicon-play thumbnail-play-icon playlist-thumbnail-icon"></span>
                                 </a>
-                            </li>
-                        </ul>
+                                <div class="video-option">
+                                    <div>
+                                        <button class="btn btn-warning btn-sm">Sửa</button>
+                                        <button class="btn btn-danger btn-sm" ng-click="deleteVideo(video.id)">Xóa</button>
+                                    </div>
 
+                                </div>
+                            </div>
+
+                            <a class="caption" style="text-decoration: none; color: black;" href="#!watch?id={{video.id}}"><strong ng-bind="video.attributes.name"></strong></a>
+                            <p>Xuất bản: <span ng-bind="video.attributes.createdTimeMLS"></span></p>
+                        </div>
                     </section>
                 </div>
         </div>
