@@ -19,26 +19,34 @@
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner">
                     <div class="item active">
-                        <img src="img/youtube-banner.jpg" alt="You Tube Partner" title="Chúng tôi là partner tự phong của Youtube" style="width:100%">
-                        <div class="carousel-caption">
+                        <a href="#!watch?youtubeId=Y29OrOVJUKs">
+                            <img src="https://i.ytimg.com/vi/Y29OrOVJUKs/hqdefault.jpg" alt="Em gái mưa" title="Em gái mưa" style="width:100%">
+                        </a>
 
-                            <p>Partner tự phong của Youtube</p>
+                        <div class="carousel-caption">
+                            <h3>Em gái mưa</h3>
+                            <p>Hương Tràm</p>
                         </div>
                     </div>
 
                     <div class="item">
-                        <img src="img/playlist-banner.png" alt="Your Playlist" title="Xào nấu Playlist theo cách của bạn" style="width:100%">
+                        <a href="#!watch?youtubeId=j__Q13iAxNk">
+                            <img src="https://i.ytimg.com/vi/j__Q13iAxNk/hqdefault.jpg" alt="Phía sau một cô gái" title="Phía sau một cô gái" style="width:100%">
+                        </a>
                         <div class="carousel-caption">
-                            <h3>Mytube</h3>
-                            <p>Tổng hợp video theo cách của bạn</p>
+                            <h3>Phía sau một cô gái</h3>
+                            <p>Soobin Hoàng Sơn</p>
                         </div>
                     </div>
 
                     <div class="item">
-                        <img src="img/player-banner.png" alt="Player" title="Còn phát video thế nào là việc của chúng tôi" style="width:100%">
+                        <a href="#!watch?youtubeId=3AtDnEC4zak">
+                            <img src="https://i.ytimg.com/vi/3AtDnEC4zak/hqdefault.jpg" alt="We Don't Talk Anymore" title="We Don't Talk Anymore" style="width:100%">
+                        </a>
+
                         <div class="carousel-caption">
-                            <h3></h3>
-                            <p>Còn hiển thị thế nào là việc của chúng tôi</p>
+                            <h3>We Don't Talk Anymore</h3>
+                            <p>Charlie Puth</p>
                         </div>
                     </div>
                 </div>
@@ -56,105 +64,69 @@
         </div>
         <!--Panel of New Video-->
 
-        <div class="col-md-6">
-            <div class="panel panel-primary">
+        <div class="col-md-6 " ng-init="loadnewUploadVideo()">
+            <div class="panel panel-primary custom-hr">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Video Mới</h3>
+                    <h3 class="panel-title">Video mới thêm</h3>
                 </div>
-                <div class="panel-body">
+                    <div class="panel-body" ng-repeat="video in yourNewVideo">
 
                     <!--The Video-->
-
+                    
                     <div class="row">
-                        <div class="col-md-3 col-sm-6 col-ms-7 col-xs-12">
-                            <a href="#!watch?id={{videosArray[0].id}}"><img
-                                    src="https://i.ytimg.com/vi/{{videosArray[0].attributes.youtubeId}}/hqdefault.jpg"
-                                    alt="{{videosArray[0].attributes.name}}"
+                        <div class="col-md-4 col-sm-6 col-ms-6 col-xs-12">
+                            <a href="#!watch?id={{video.id}}"><img
+                                    src="https://i.ytimg.com/vi/{{video.attributes.youtubeId}}/mqdefault.jpg"
+                                    alt="{{video.attributes.name}}"
                                     class="hover-flash" style="width: 100%"></a>
                         </div>
 
-                        <div class="col-md-9 col-sm-6 col-ms-5 col-xs-12">
-                            <a href="#!watch?id={{videosArray[0].id}}"><h4 ng-bind="videosArray[0].attributes.name"></h4></a>
-                            <p><strong>Xuất bản:</strong> {{videosArray[0].attributes.createdTimeMLS}}</p>
+                        <div class="col-md-8 col-sm-6 col-ms-6 col-xs-12">
+                            <a href="#!watch?id={{video.id}}"><strong ng-bind="video.attributes.name"></strong></a>
+                            <p><strong>Xuất bản:</strong> {{video.attributes.createdTimeMLS}}</p>
                         </div>
                     </div>
                     <hr>
-                    <div class="row">
-                        <div class="col-md-3 col-sm-6 col-ms-7 col-xs-12">
-                            <a href="#!watch?id={{videosArray[1].id}}"><img
-                                    src="https://i.ytimg.com/vi/{{videosArray[1].attributes.youtubeId}}/hqdefault.jpg"
-                                    alt="{{videosArray[1].attributes.name}}"
-                                    class="img-responsive hover-flash"></a>
-                        </div>
-
-                        <div class="col-md-9 col-sm-6 col-ms-5 col-xs-12">
-                            <a href="#!watch?id={{videosArray[1].id}}"><h4 ng-bind="videosArray[1].attributes.name"></h4></a>
-                            <p><strong>Xuất bản:</strong> {{videosArray[1].attributes.createdTimeMLS}}</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-3 col-sm-6 col-ms-7 col-xs-12">
-                            <a href="#!watch?id={{videosArray[2].id}}"><img
-                                    src="https://i.ytimg.com/vi/{{videosArray[2].attributes.youtubeId}}/hqdefault.jpg"
-                                    alt="{{videosArray[2].attributes.name}}"
-                                    class="img-responsive hover-flash"></a>
-                        </div>
-                        <div class="col-md-9 col-sm-6 col-ms-5 col-xs-12">
-                            <a href="#!watch?id={{videosArray[2].id}}"><h4 ng-bind="videosArray[2].attributes.name"></h4></a>
-                            <p><strong>Xuất bản:</strong> {{videosArray[2].attributes.createdTimeMLS}}</p>
-                        </div>
-                    </div>
                 </div>
+                
             </div>
         </div>
 
     </header><hr>
 
-    <!-- <ul class="list-unstyled video-list-thumbs row">
-         <li class="col-lg-3 col-sm-4 col-xs-12 col-ms-6" ng-repeat="obj in arrayObject">
-            <a class="hover-flash" href="" title={{obj.attributes.name}} ng-click="playVideo(obj.attributes.youtubeId, obj.attributes.name, obj.id);" data-toggle="modal" data-target="#myModal">
-                <img src={{obj.attributes.thumbnail}} alt={{obj.attributes.name}}>
-                <h2 ng-bind="obj.attributes.name"></h2>
-                <span class="glyphicon glyphicon-play-circle"></span>
-            </a>
-        </li>
-    </ul> -->
-    <div>
-        <a href="" style="text-decoration: none" class="hover-flash" ng-click="linkToPlaylist(0, 'Playlist Chung')">
-          <b class="text-primary" style="font-size: 16px;">Chung </b><span class="glyphicon glyphicon-forward"></span>
-        </a>
-        <br> <br>
-        <div class="row display-flex">
-            <div class="col-xs-6 col-md-3" ng-repeat="video in videosArray | limitTo: 4">
-                <a class="hover-flash thumbnail" href=""
-                   ng-click="playVideo(video.attributes.youtubeId, video.attributes.name, video.id);"
-                   data-toggle="modal" data-target="#myModal">
-                    <img ng-src="{{video.attributes.thumbnail}}" alt={{video.attributes.name}}>
-                    <span class="glyphicon glyphicon-play thumbnail-play-icon"></span>
-                </a>
-                <a href="" class="caption" style="text-decoration: none; color: black;"><strong ng-bind="video.attributes.name"></strong></a>
-                <p>Xuất bản: <span ng-bind="video.attributes.createdTimeMLS"></span></p>
-            </div>
+    <h4>Nổi bật</h4>
+    <br>
+    <div class="row">
+        <div class="col-md-9">
+            <form ng-init="initSearchingItems">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Tìm Kiếm" ng-model="youtubeKeyword">
+                        <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary" ng-click="searchVideo()">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </span>
+                    </div>
+                </div>
+            </form>
         </div>
-        <br>
+        <span class="cssload-jumping" ng-show="downloadingVideo">
+            <span></span><span></span><span></span><span></span><span></span>
+        </span>
     </div>
 
-    <div ng-repeat="playlist in filterPlaylistNotUndefined(playlistArray)">
-        <a href="" style="text-decoration: none" class="hover-flash" ng-click="linkToPlaylist(playlist.id, playlist.attributes.name)">
-            </h4><b ng-bind="playlist.attributes.name" class="text-primary hover-flash" style="font-size: 16px;"></b> <span class="glyphicon glyphicon-forward"></span>
-        </a>
-        <br><br>
-        <div class="row display-flex">
-            <div class="col-xs-6 col-md-3" ng-repeat="video in filterVideoForPlaylist(playlist) | limitTo: 4">
-                <a class="hover-flash thumbnail" href=""
-                   ng-click="playVideo(video.attributes.youtubeId, video.attributes.name, video.id);"
+
+        <div class="row display-flex" ng-init="loadVideofromYT()">
+            <div class="col-xs-12 col-md-3 col-ms-6 col-sm-4" ng-repeat="video in videosArray">
+                <a class="hover-flash thumbnail shadow-box" href=""
+                   ng-click="playVideo(video.attributes.youtubeId, video.attributes.name, video.attributes.description, video.attributes.thumbnail);"
                    data-toggle="modal" data-target="#myModal">
                     <img ng-src="{{video.attributes.thumbnail}}" alt={{video.attributes.name}}>
                     <span class="glyphicon glyphicon-play thumbnail-play-icon"></span>
                 </a>
                 <a href="" class="caption" style="text-decoration: none; color: black;"
-                   ng-click="playVideo(video.attributes.youtubeId, video.attributes.name, video.id);"
+                   ng-click="playVideo(video.attributes.youtubeId, video.attributes.name, video.attributes.description, video.attributes.thumbnail);"
                    data-toggle="modal" data-target="#myModal">
                     <strong ng-bind="video.attributes.name"></strong>
                 </a>
@@ -162,7 +134,41 @@
             </div>
         </div>
         <br>
+    <button type="button" class="btn btn-default" ng-click="seemoreVideo()">Xem thêm</button>&nbsp;
+    <span class="cssload-jumping" ng-show="downloadingVideo">
+        <span></span><span></span><span></span><span></span><span></span>
+    </span>
+    <hr>
+    <!--</div>-->
+    <a href="#!playlist" style="text-decoration: none" class="hover-flash">
+        <span class="glyphicon glyphicon-forward"></span> <b class="text-primary" style="font-size: 16px;">Playlist của bạn </b>
+    </a> &nbsp;
+    <a href="" style="text-decoration: none" class="hover-flash text-success"
+       ng-show="userToken !== null"
+        data-toggle="modal"
+        data-target="#createPlaylistModal">
+        <span class="glyphicon glyphicon-plus"></span> <b class="text-success" style="font-size: 16px;">Thêm playlist </b>
+    </a>
+    <br> <br>
+    <div class="row display-flex" ng-init="loadUserPlaylist()">
+        <div class="col-sm-4 col-md-3 col-ms-6 col-xs-12" ng-repeat="playlist in playlistArray">
+            <div class="thumbnail crop" style="background-image: url({{playlist.attributes.thumbnailUrl}}); background-size: cover">
+            </div>
+            <div class="caption">
+                <h3 ng-bind="playlist.attributes.name"></h3>
+                <p ng-bind="playlist.attributes.description"></p>
+                <p>
+                    <a href="#!watch?playlistId={{playlist.id}}" class="btn btn-primary">
+                        <span class="glyphicon glyphicon-play"></span> Xem
+                    </a>
+                    <button type="button" class="btn btn-danger"
+                            ng-click="deletePlaylist(playlist.id)"
+                            ng-show="{{playlist.id}} !== 0"><span class="glyphicon glyphicon-remove"></span> Xóa</button>
+                </p>
+            </div>
+        </div>
     </div>
+
 
     <!--Modal for play Video-->
 
@@ -171,20 +177,113 @@
 
             <!-- Modal content-->
             <div class="modal-content">
+                <!-- Modal header -->
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" ng-click="clearModal()">&times;</button>
-                    <h4 class="modal-title video-title text-center">{{videoName}}</h4>
+                    <h4 class="modal-title video-title text-center" ng-bind="videoDataToSend.data.attributes.name"></h4>
                 </div>
+
+                <!-- Modal body -->
                 <div class="modal-body">
                     <div class="embed-responsive embed-responsive-16by9 video-container" id="video-player">
                         <iframe class="embed-responsive-item" id="videoEmbed" src="{{embedUrl}}" allowfullscreen></iframe>
                     </div>
                 </div>
+
+                <!-- Modal footer -->
                 <div class="modal-footer">
+                    <span ng-show="uploadSuccess" class="text-success">Thêm vào playlist thành công</span>
+                     <span class="cssload-jumping" ng-show="uploadingVideo">
+                        <span></span><span></span><span></span><span></span><span></span>
+                    </span> &nbsp;
+                    <div class="btn-group" ng-show="userToken !== null">
+                        <button type="button" class="btn btn-primary" ng-click="quickAccessVideo()">Thêm vào playlist</button>
+                        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span ng-bind="quickAddPlaylistName"></span>
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li ng-repeat="playlist in playlistArray">
+                                <a href="" ng-click="chooseThePlaylist(playlist.id, playlist.attributes.name)">{{playlist.attributes.name}}</a></li>
+                        </ul>
+                    </div>
+                    <a href="#!watch?youtubeId={{videoDataToSend.data.attributes.youtubeId}}" class="btn btn-success"><i class="glyphicon glyphicon-info-sign"></i> Chi tiết</a>
                     <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clearModal()"><span class="glyphicon glyphicon-triangle-left"></span> <strong>Đóng</strong></button>
-                    <a href="#!watch?id={{videoId}}" class="btn btn-success"><span class="glyphicon glyphicon-play-circle"></span> <strong>Xem chi tiết</strong></a>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="createPlaylistModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ng-init="createPlaylistDataToSend()">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center">Thêm Playlist</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Alert -->
+                    <div class="alert alert-success text-center" ng-show="addPlaylistSuccess">
+                        <span class="glyphicon glyphicon-ok"></span> Bạn đã tạo playlist thành công
+                    </div>
+                    <!-- Form -->
+                    <form action="post" class="form-horizontal" name="form" novalidate>
+                        <!-- Name -->
+                        <div class="form-group has-feedback"
+                             ng-class="{'has-warning': form.name.$error.minlength,
+                                        'has-success': form.name.$valid}">
+                            <label for="name" class="control-label col-md-3 col-sm-3">Tên Playlist</label>
+                            <div class="col-md-8 col-sm-8">
+                                <input name="name" type="text" class="form-control" placeholder="Tên Playlist của bạn"
+                                       ng-model="playlistData.data.attributes.name"
+                                       ng-minlength="7" required>
+                                <span class="glyphicon glyphicon-ok form-control-feedback"
+                                      ng-show="form.name.$valid"></span>
+                                <span class="glyphicon glyphicon-warning-sign form-control-feedback"
+                                      ng-show="form.name.$error.minlength"></span>
+                                <div class="text-warning" ng-show="form.name.$error.minlength">
+                                    Tên Playlist có ít nhất 7 ký tự
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description" class="control-label col-md-3 col-sm-3">Mô tả</label>
+                            <div class="col-md-8 col-sm-8">
+                    <textarea name="description" type="text" class="form-control" placeholder="Mô tả playlist" rows="5"
+                              ng-model="playlistData.data.attributes.description"></textarea>
+                            </div>
+                        </div>
+                        <!-- Thumbnail -->
+                        <div class="form-group">
+                            <label for="thumbnail" class="control-label col-md-3 col-sm-3">Thumbnail</label>
+                            <div class="col-md-8 col-sm-8">
+                                <input name="thumbnail" type="text" class="form-control" placeholder="Ảnh bìa cho Playlist"
+                                       ng-model="playlistData.data.attributes.thumbnailUrl">
+                            </div>
+                        </div>
+                        <!-- Button -->
+                        <div class="form-group">
+                            <div class="col-md-3 col-sm-3">
+                                &nbsp;
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <button type="button" class="btn btn-primary"
+                                        ng-disabled="form.$invalid"
+                                        ng-click="submitNewPlaylist()"><span class="glyphicon glyphicon-send"></span> Submit</button>
+                                <button type="reset" class="btn btn-default"
+                                        ng-click="resetForm()"><span class="glyphicon glyphicon-refresh"></span> Reset</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </main>

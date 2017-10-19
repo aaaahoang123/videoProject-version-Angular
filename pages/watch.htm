@@ -13,7 +13,7 @@
     </div>
     <section class="row">
         <!-- Video Player -->
-        <div class="col-md- col-sm-9" >
+        <div class="col-md-8 col-sm-9" ng-init="createVideoData()">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="embed-responsive embed-responsive-16by9">
@@ -25,10 +25,14 @@
                             <div class="col-md-8 col-sm-7 col-xs-12">
                                 <h4><strong>{{videoData.attributes.name}}</strong></h4>
                                 <p><strong>Xuất bản:</strong> {{videoData.attributes.createdTimeMLS}}</p>
-                                <p><strong>Playlist:</strong> <span ng-show="completeLoadingVideoData"> <a href="" ng-bind="videoData.attributes.playlistId"
-                                                                                                                    ng-click="linkToPlaylist(videoData.attributes.playlistId)"></a></span></p>
+                                <p><strong>Playlist:</strong> <span ng-show="completeLoadingVideoData">No <span ng-bind="videoData.attributes.playlistId"></span></span></p>
                             </div>
-                            <div class="col-md-4 col-sm-7 col-xs-12">
+                            <div class="col-md-4 col-sm-5 col-xs-12" ng-show="!videoIsInPlaylist && userToken !== null">
+                                <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#editModal">
+                                    <span class="glyphicon glyphicon-edit"></span> Thêm vào playlist
+                                </button>
+                            </div>
+                            <div class="col-md-4 col-sm-5 col-xs-12" ng-show="videoIsInPlaylist">
                                 <div class="btn-group pull-right">
                                     <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editModal">
                                         <span class="glyphicon glyphicon-edit"></span> Sửa
@@ -39,6 +43,7 @@
                                 </div>
                             </div>
                         </div>
+                    <br>
                         <span style="white-space: pre-line"><strong>Mô tả:</strong> {{videoData.attributes.description}}</span>
                         <br>
                         <hr>
@@ -48,17 +53,47 @@
             </div>
         </div> <!-- Video Player -->
         <!-- Right Side -->
-        <div class="col-md-3 col-sm-3">
-            <div class="text-center">
-                <strong>Có thể bạn sẽ thích?</strong>
+        <div class="col-md-4 col-sm-3" >
+            <div class="text-center" ng-init="loadUserPlaylist()" ng-if="userToken !== null">
+                <strong>Playlist của bạn</strong>
             </div>
-            <div class="row" ng-repeat="video in videosArray">
-                    <div class="col-md-6 col-sm-12 col-xs-4">
-                        <a ng-href="#!watch?id={{video.id}}"><img src="https://i.ytimg.com/vi/{{video.attributes.youtubeId}}/mqdefault.jpg" class="hover-flash" alt="{{video.attributes.youtubeId}}" title="{{video.attributes.name}}" style="width:100%"></a>
-                    </div>
-                    <div class="col-md-6 col-sm-12 col-xs-8">
-                        <p><a ng-href="#!watch?id={{video.id}}"><strong ng-bind="video.attributes.name"></strong></a></p>
-                    </div>
+            <br>
+            <div class="row" ng-repeat="playlist in playlistArray" style="margin-bottom: 5px;">
+                <div class="col-md-6 col-sm-12 col-xs-4">
+                    <a ng-href="#!watch?playlistId={{playlist.id}}">
+                        <div class="hover-flash" style="height: 150px; background-image: url({{playlist.attributes.thumbnailUrl}}); background-size: cover; width: 100%; )">
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-8">
+                    <a ng-href="#!watch?playlistId={{playlist.id}}"><strong ng-bind="playlist.attributes.name"></strong></a>
+                </div>
+            </div>
+
+            <br>
+            <hr>
+            <div class="text-center">
+                <strong ng-show="videoIsInPlaylist">Cùng Playlist</strong>
+                <strong ng-show="!videoIsInPlaylist" ng-init="loadVideofromYT()" ng-if="!videoIsInPlaylist">Có thể bạn sẽ thích</strong>
+            </div>
+            <br>
+            <div class="row" ng-repeat="video in videosArray" style="margin-bottom: 3px;">
+                <div class="col-md-6 col-sm-12 col-xs-4">
+                    <a ng-href="#!watch?id={{video.id}}&playlistId={{video.attributes.playlistId}}" ng-if="videoIsInPlaylist">
+                        <img src="https://i.ytimg.com/vi/{{video.attributes.youtubeId}}/mqdefault.jpg" class="hover-flash" alt="{{video.attributes.youtubeId}}" title="{{video.attributes.name}}"
+                             style="width:100%">
+                    </a>
+                    <a ng-href="#!watch?youtubeId={{video.id}}" ng-if="!videoIsInPlaylist">
+                        <img src="https://i.ytimg.com/vi/{{video.attributes.youtubeId}}/mqdefault.jpg" class="hover-flash" alt="{{video.attributes.youtubeId}}" title="{{video.attributes.name}}"
+                             style="width:100%">
+                    </a>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-8">
+                    <p>
+                        <a ng-href="#!watch?id={{video.id}}&playlistId={{video.attributes.playlistId}}" ng-if="videoIsInPlaylist"><strong ng-bind="video.attributes.name"></strong></a>
+                        <a ng-href="#!watch?youtubeId={{video.id}}" ng-if="!videoIsInPlaylist"><strong ng-bind="video.attributes.name"></strong></a>
+                    </p>
+                </div>
             </div>
         </div>
     </section>
@@ -136,14 +171,13 @@
                             </div>
                         </div>
 
-
-
                         <!--The selector of Playlist-->
 
                         <div class="form-group">
                             <label for="playlistId" name="playlistId" class="control-label col-md-2 col-sm-2">Playlist <strong class="text-danger">*</strong></label>
                             <div class="col-md-5 col-sm-5">
                                 <select class="form-control" ng-model="editData.data.attributes.playlistId" required>
+                                    <option value="{{thePlaylisId}}" selected ng-if="videoIsInPlaylist">Không đổi</option>
                                     <option ng-repeat="playlist in playlistArray" value="{{playlist.id}}">{{playlist.attributes.name}}</option>
                                 </select>
                             </div>
@@ -155,8 +189,6 @@
                                 <input name="authorName" type="text" class="form-control" ng-model="editData.data.attributes.thumbnail" placeholder="Nếu để trống, ảnh bìa sẽ là thumbnail mặc định">
                             </div>
                         </div>
-
-
 
                         <!--The Button-->
 

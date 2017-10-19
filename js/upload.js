@@ -1,4 +1,12 @@
 VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $rootScope, $location) {
+    var token = localStorage.getItem('token');
+    if (token !== null) {
+        $scope.isSignedIn = true;
+    }
+    else {
+        $scope.isSignedIn = false;
+        $("#alertNoSignin").modal("show");
+    }
     /*Get the playlist*/
     $scope.choosenPlaylist = $rootScope.choosenPlaylist;
     if ($rootScope.choosenPlaylist === undefined) {
@@ -8,32 +16,28 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
             }
         }
     }
-
-    $http({
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('token')
-        },
-        url: playlistApi
-    }).
-    then(function successCallback(response) {
-        $scope.playlistArray = response.data.data;
-        if ($scope.playlistArray === undefined) {
-            $('#alertModal').modal();
-        }
-        else {
+    $scope.getAllPlaylist = function () {
+        $http({
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
+            url: playlistApi
+        }).
+        then(function successCallback(response) {
+            $scope.playlistArray = response.data.data;
             if ($rootScope.choosenPlaylist !== undefined) {
                 $scope.videoData.data.attributes.playlistId = $rootScope.choosenPlaylist.attributes.playlistId;
             }
             else {
-                $scope.videoData.data.attributes.playlistId = "0";
+                $scope.videoData.data.attributes.playlistId = 0;
             }
-        }
+        }, function errorCallback(response) {
+            console.log(response);
+        });
+    };
 
-    }, function errorCallback(response) {
-        console.log(response);
-    });
 
 
     /*Validate Id with youtube Api*/
@@ -96,7 +100,6 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
             data: $scope.videoData
         }).then(function successCallback(response) {
             $scope.uploadSuccess = true;
-            console.log(response);
             setTimeout(function () {
                 location.reload();
             }, 1000)
@@ -111,7 +114,7 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
             $scope.videoData.data.attributes.thumbnail = $scope.ytCallbackData.snippet.thumbnails.medium.url;
             $scope.videoData.data.attributes.keywords = angular.toJson($scope.ytCallbackData.snippet.tags, 3);
     };
-    $scope.resetForm = function (model) {
+    $scope.resetForm = function () {
         $scope.existId = false;
         $scope.responseIdNotExist = false;
         $scope.videoData = {

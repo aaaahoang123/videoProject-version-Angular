@@ -1,5 +1,13 @@
-VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $rootScope) {
+VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $rootScope, $timeout) {
     /*Get the video of choosen Playlist*/
+    var token = localStorage.getItem('token');
+    if (token !== null) {
+        $scope.isSignedIn = true;
+    }
+    else {
+        $scope.isSignedIn = false;
+        $("#alertNoSignin").modal();
+    }
     $scope.getVideoByPlaylistId = function(playlistId, playlistName) {
         $scope.page = 'choosenPlaylistPage'; /*Open the switch of choosen playlist*/
         $scope.playlistName = playlistName;
@@ -21,6 +29,7 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
                     $scope.videosArray[i].attributes.createdTimeMLS = new Date($scope.videosArray[i].attributes.createdTimeMLS).toLocaleDateString();
                 }
             }
+            console.log($scope.videosArray);
         }, function errorCallBack(response) {
             alert('Tải video thất bại');
         });
@@ -89,13 +98,10 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
                     }
                 ];
             }
-
         }, function errorCallback(response) {
             console.log(response);
         });
     };
-
-
     /* Upload a playlist*/
     $scope.playlistData = {
         "data": {
@@ -120,9 +126,11 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
             data: $scope.playlistData
         }).then(function successCallback(response) {
             $scope.uploadSuccess = true;
-            $scope.page = 'playlist';
             $scope.getAllPlaylist();
-            $scope.resetForm();
+            $timeout(function () {
+                $scope.page = 'playlist';
+                $scope.resetForm();
+            }, 500);
         }, function errorCallback(errorResponse) {
             console.log(errorResponse);
         });
@@ -145,6 +153,7 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
     /*Reset Form*/
     $scope.resetForm = function () {
         angular.copy({}, $scope.playlistData);
+        $scope.uploadSuccess = false;
     };
 
     // Delete video
@@ -161,5 +170,81 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
         }, function errorCallback(response) {
             $scope.responseEditError = response;
         });
+    };
+    // Edit Video
+    $scope.createEditData = function () {
+        $scope.editData = {
+            "data":{
+                "type":"Video",
+                "attributes":{
+                    "youtubeId": "",
+                    "name": "",
+                    "description": "",
+                    "keywords": "",
+                    "playlistId": "",
+                    "thumbnail": ""
+                }
+            }
+        };
+    };
+    $scope.openTheEditVideoForm = function (videoData) {
+        $scope.videoData = videoData;
+        $scope.editData = {
+            "data":{
+                "type":"Video",
+                "attributes":{
+                    "youtubeId": videoData.attributes.youtubeId,
+                    "name": videoData.attributes.name,
+                    "description": videoData.attributes.description,
+                    "keywords": videoData.attributes.keywords,
+                    "playlistId": videoData.attributes.playlistId,
+                    "thumbnail": videoData.attributes.thumbnail
+                }
+            }
+        };
+        $scope.editSuccess = false;
+        $scope.editError = false;
+        $("#editModal").modal();
+    };
+
+    $scope.editVideo = function () {
+        if ($scope.editData.data.attributes.thumbnail === "") {
+            $scope.editData.data.attributes.thumbnail = 'https://i.ytimg.com/vi/' + $scope.editData.data.attributes.youtubeId + '/mqdefault.jpg';
+        }
+        $http({
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('token')
+            },
+            url: videoApi + '/' + $scope.videoData.id,
+            data: $scope.editData
+        }).then(function successCallback(response) {
+            $scope.editSuccess = true;
+            $timeout(function () {
+                $("#editModal").modal("hide");
+                $scope.getVideoByPlaylistId($rootScope.choosenPlaylist.attributes.playlistId, $scope.playlistName);
+                $scope.editSuccess = false;
+            }, 800);
+        }, function errorCallback(response) {
+            $scope.editError = true;
+            $scope.responseEditError = response;
+        });
+    };
+
+    $scope.resetEditForm = function () {
+        $scope.editData = {
+            'data': {
+                'attributes': {
+                    'playlistId': $scope.videoData.attributes.playlistId,
+                    'youtubeId': $scope.videoData.attributes.youtubeId,
+                    'name': $scope.videoData.attributes.name,
+                    'description': $scope.videoData.attributes.description,
+                    'keywords': $scope.videoData.attributes.keywords,
+                    'thumbnail': $scope.videoData.attributes.thumbnail
+                }
+            }
+        };
+
     };
 });

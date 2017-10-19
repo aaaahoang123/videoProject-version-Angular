@@ -85,7 +85,12 @@ VideoPlayerApp.controller('navbarController', function ($scope, $location, $http
                     $scope.signOut();
                 };
                 $timeout(function () {
-                    $location.path('/');
+                    if ($location.path() !== "/") {
+                        $location.path('/');
+                    }
+                    else {
+                        location.reload();
+                    }
                 }, 500); /*Load the home route*/
         }, function errorCallback(response) {
                 $scope.signInResponse = response.data.errors[0].detail;

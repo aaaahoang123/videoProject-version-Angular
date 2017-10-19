@@ -8,7 +8,7 @@
 
 
 
-    <section class="container">
+    <section class="container" ng-show="isSignedIn" ng-init="getAllPlaylist()" ng-if="isSignedIn">
         <div class="col-md-2 col-sm-4">
             <ul class="nav nav-pills nav-stacked text-center">
                 <li role="presentation" ng-class={active:isActivePlaylistSidebar('playlist')}><a href="" ng-click="switchPage('playlist')">Playlist</a></li>
@@ -29,9 +29,9 @@
                                 <h3 ng-bind="playlist.attributes.name"></h3>
                                 <p ng-bind="playlist.attributes.description"></p>
                                 <p>
-                                    <button type="button" class="btn btn-primary"
+                                    <button type="button" class="btn btn-warning"
                                             ng-click="getVideoByPlaylistId(playlist.id, playlist.attributes.name)">
-                                        <span class="glyphicon glyphicon-play"></span> Xem
+                                        <span class="glyphicon glyphicon-menu-right"></span> Quản lý
                                     </button>
                                     <button type="button" class="btn btn-danger" 
                                             ng-click="deletePlaylist(playlist.id)"><span class="glyphicon glyphicon-remove"></span> Xóa</button>
@@ -112,7 +112,7 @@
                 <div ng-switch-when="choosenPlaylistPage">
                     <ul class="nav nav-pills">
                         <li role="presentation"><a href="" ng-click="switchPage('playlist')"><span class="glyphicon glyphicon-chevron-left"></span> Back</a></li>
-                        <li role="presentation" class="active"><a href=""><span class="glyphicon glyphicon-play"></span> Playlist</a></li>
+                        <li role="presentation" class="active"><a href=""><span class="glyphicon glyphicon-edit"></span> Playlist</a></li>
                         <li role="presentation"><a href="#!uploadForm"><span class="glyphicon glyphicon-plus"></span> Thêm video</a></li>
                     </ul>
                     <br>
@@ -123,18 +123,16 @@
                         <div class="col-xs-12 col-md-4 col-sm-6 col-ms-6" ng-repeat="video in videosArray">
                             <div class="thumbnail" style="position: relative">
                                 <img class="hover-flash" ng-src={{video.attributes.thumbnail}} alt="{{video.attributes.name}}">
-                                <a href="#!watch?id={{video.id}}">
+                                <a href="#!watch?id={{video.id}}&playlistId={{video.attributes.playlistId}}">
                                     <span class="glyphicon glyphicon-play thumbnail-play-icon playlist-thumbnail-icon"></span>
                                 </a>
                                 <div class="video-option">
                                     <div>
-                                        <button class="btn btn-warning btn-sm">Sửa</button>
+                                        <button class="btn btn-warning btn-sm" ng-click="openTheEditVideoForm(video)">Sửa</button>
                                         <button class="btn btn-danger btn-sm" ng-click="deleteVideo(video.id)">Xóa</button>
                                     </div>
-
                                 </div>
                             </div>
-
                             <a class="caption" style="text-decoration: none; color: black;" href="#!watch?id={{video.id}}"><strong ng-bind="video.attributes.name"></strong></a>
                             <p>Xuất bản: <span ng-bind="video.attributes.createdTimeMLS"></span></p>
                         </div>
@@ -151,12 +149,149 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <div class="text-center text-info">
                         <h4>Chào mừng bạn đến với MyTube</h4>
-                        <p>Dường như bạn vẫn chưa có playlist thì phải?</p>
                         <p>Hãy tạo nhanh một playlist để tận hưởng những tính năng của chúng tôi nhé!</p>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section class="modal fade" id="alertNoSignin" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <div class="text-center text-info">
+                        <h4>Bạn chưa đăng nhập</h4>
+                        <p>Dường như bạn vẫn chưa đăng nhập thì phải</p>
+                        <p>Trước hết hãy đăng nhập, hoặc đăng ký đã nhé</p>
+                        <a href="#!signin" class="btn btn-primary">Đăng nhập</a>
+                        <a href="#!signup" class="btn btn-warning">Đăng ký</a>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Edit -->
+    <section class="modal fade" id="editModal" role="dialog" ng-init="createEditData()">
+        <div class="modal-dialog modal-lg">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+                    <h4 class="modal-title video-title text-center">Chỉnh sửa Video</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- Alert Success -->
+                    <div class="alert alert-success text-center" ng-show="editSuccess">
+                        <span class="glyphicon glyphicon-ok"></span> <strong>Sửa thông tin video thành công</strong>
+                    </div>
+                    <!-- Alert Error -->
+                    <div class="alert alert-danger text-center" ng-show="editError">
+                        <span class="glyphicon glyphicon-remove"></span> <strong>{{responseEditError}}</strong>
+                    </div>
+                    <form action="post" class="form-horizontal" name="form" ng-submit="submit()" novalidate>
+                        <div class="form-group">
+                            <label for="videoId" class="control-label col-md-2 col-sm-2">Video ID <strong class="text-danger">*</strong></label>
+                            <div class="col-md-5 col-sm-5">
+                                <input name="videoId" type="text" class="form-control" disabled="true" ng-model="editData.data.attributes.youtubeId">
+                            </div>
+
+                        </div>
+
+                        <!--Name-->
+                        <div class="form-group">
+                            <label for="name" class="control-label col-md-2 col-sm-2">Tên Video <strong class="text-danger">*</strong></label>
+                            <div class="col-md-5 col-sm-5">
+                                <input name="name" type="text" class="form-control" placeholder="Tên Video có 3 - 50 ký tự"
+                                       ng-model="editData.data.attributes.name"
+                                       ng-minlength="3"
+                                       ng-maxlength="50" required>
+
+                                <!-- alert input Name -->
+
+                                <div ng-show="form.name.$invalid" class="text-warning">
+                                    <div ng-show="form.name.$error.requied">
+                                        <span class="glyphicon glyphicon-warning-sign"></span> Tên Video không được để trống
+                                    </div>
+                                    <div ng-show="form.name.$error.minlength || form.name.$error.maxlength">
+                                        <span class="glyphicon glyphicon-warning-sign"></span> Tên Video có 3 - 50 ký tự
+                                    </div>
+                                </div>
+                                <div ng-show="form.name.$valid" class="text-success">
+                                    <span class="glyphicon glyphicon-ok"></span> Tên Video hợp lệ
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!--Description-->
+
+                        <div class="form-group">
+                            <label for="description" class="control-label col-md-2 col-sm-2">Mô Tả</label>
+                            <div class="col-md-5 col-sm-5">
+                                <textarea name="description" class="form-control" placeholder="" rows="5" ng-model="editData.data.attributes.description"></textarea>
+                            </div>
+                        </div>
+
+                        <!--Keywords-->
+
+                        <div class="form-group">
+                            <label for="keywords" class="control-label col-md-2 col-sm-2">Từ Khóa</label>
+                            <div class="col-md-5 col-sm-5">
+                                <input type="text" name="keywords" class="form-control" placeholder="Từ khóa giúp tìm kiếm Video dễ hơn" ng-model="editData.data.attributes.keywords">
+                            </div>
+                        </div>
+
+                        <!--The selector of Playlist-->
+
+                        <div class="form-group">
+                            <label for="playlistId" name="playlistId" class="control-label col-md-2 col-sm-2">Playlist <strong class="text-danger">*</strong></label>
+                            <div class="col-md-5 col-sm-5">
+                                <select class="form-control" ng-model="editData.data.attributes.playlistId" required>
+                                    <option value="{{thePlaylisId}}" selected ng-if="videoIsInPlaylist">Không đổi</option>
+                                    <option ng-repeat="playlist in playlistArray" value="{{playlist.id}}">{{playlist.attributes.name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Thumbnail -->
+                        <div class="form-group">
+                            <label for="authorName" class="control-label col-md-2 col-sm-2">Link Ảnh Bìa</label>
+                            <div class="col-md-5 col-sm-5">
+                                <input name="authorName" type="text" class="form-control" ng-model="editData.data.attributes.thumbnail" placeholder="Nếu để trống, ảnh bìa sẽ là thumbnail mặc định">
+                            </div>
+                        </div>
+
+                        <!--The Button-->
+
+                        <div class="form-group">
+                            <div class="col-md-2 col-sm-2">
+                                &nbsp;
+                            </div>
+
+                            <div class="col-md-10 col-sm-10">
+                                <button type="button" class="btn btn-warning" ng-disabled="!form.$dirty || form.$dirty && form.$invalid"
+                                        ng-click="editVideo()"><span class="glyphicon glyphicon-edit"></span> Sửa
+                                </button>
+                                <button type="button" class="btn btn-info"
+                                        ng-click="resetEditForm()">
+                                    <span class="glyphicon glyphicon-refresh"></span> Reset
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-triangle-left"></span> <strong>Back</strong></button>
+                </div>
+            </div>
+
         </div>
     </section>
 </main>

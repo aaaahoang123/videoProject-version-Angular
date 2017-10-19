@@ -2,7 +2,6 @@ var videoApi = 'https://youtube-api-challenger2.appspot.com/videos';
 var membersApi = 'https://youtube-api-challenger2.appspot.com/members';
 var authenticationApi = 'https://youtube-api-challenger2.appspot.com/authentication';
 var playlistApi = 'https://youtube-api-challenger2.appspot.com/playlists';
-
 var VideoPlayerApp = angular.module('VideoPlayerApp', ["ngRoute"]);
  /*Compair two password when signup*/
 VideoPlayerApp.directive("compareTo", function ()
@@ -20,13 +19,9 @@ VideoPlayerApp.directive("compareTo", function ()
 });
 /*Close all Modal when change view*/
 VideoPlayerApp.run(["$rootScope","$http","$location",
-    function($rootScope,$http,$location){
+    function($rootScope){
         $rootScope.$on('$routeChangeStart', function() {
             $('.modal').modal('hide');
-            $rootScope.userToken = localStorage.getItem('token');
-            if ($rootScope.userToken === null) {
-                $location.path('/signup');
-            }
         })
 
     }]);
@@ -45,6 +40,10 @@ VideoPlayerApp.config(['$routeProvider', function($routeProvider) {
             templateUrl: 'pages/signUp.htm',
             controller: 'signupController'
          
+        }).
+        when('/signin', {
+            templateUrl: 'pages/signIn.htm',
+            controller: 'signInController'
         }).
         when('/playlist', {
             templateUrl: 'pages/playlist.htm',

@@ -1,8 +1,6 @@
 VideoPlayerApp.controller('signupController', function($scope, $http, $timeout, $location) {
-    $scope.userToken = localStorage.getItem('token');
-    $('#alertModal').modal();
     /*Open modal when signup*/
-    if ($scope.userToken !== null) {
+    if (localStorage.getItem('token') !== null) {
        $location.path('/alertSignUp');
     }
     $scope.alertSuccess = false;
