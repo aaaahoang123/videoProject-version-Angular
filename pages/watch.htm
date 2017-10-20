@@ -27,12 +27,12 @@
                                 <p><strong>Xuất bản:</strong> {{videoData.attributes.createdTimeMLS}}</p>
                                 <p><strong>Playlist:</strong> <span ng-show="completeLoadingVideoData">No <span ng-bind="videoData.attributes.playlistId"></span></span></p>
                             </div>
-                            <div class="col-md-4 col-sm-5 col-xs-12" ng-show="!videoIsInPlaylist && userToken !== null">
+                            <div class="col-md-4 col-sm-5 col-xs-12" ng-if="!videoIsInPlaylist && userToken !== null">
                                 <button type="button" class="btn btn-warning pull-right" data-toggle="modal" data-target="#editModal">
                                     <span class="glyphicon glyphicon-edit"></span> Thêm vào playlist
                                 </button>
                             </div>
-                            <div class="col-md-4 col-sm-5 col-xs-12" ng-show="videoIsInPlaylist">
+                            <div class="col-md-4 col-sm-5 col-xs-12" ng-if="videoIsInPlaylist">
                                 <div class="btn-group pull-right">
                                     <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editModal">
                                         <span class="glyphicon glyphicon-edit"></span> Sửa
@@ -107,18 +107,20 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
 
-                    <h4 class="modal-title video-title text-center">Chỉnh sửa Video</h4>
+                    <h4 class="modal-title video-title text-center" ng-if="videoIsInPlaylist">Chỉnh sửa Video</h4>
+                    <h4 class="modal-title video-title text-center" ng-if="!videoIsInPlaylist">Thêm vào Playlist</h4>
                 </div>
                 <div class="modal-body">
                     <!-- Alert Success -->
                     <div class="alert alert-success text-center" ng-show="editSuccess">
-                        <span class="glyphicon glyphicon-ok"></span> <strong>Sửa thông tin video thành công</strong>
+                        <span class="glyphicon glyphicon-ok"></span> <strong ng-if="videoIsInPlaylist">Sửa thông tin video thành công</strong>
+                                                                        <strong ng-if="!videoIsInPlaylist">Thêm video thành công</strong>
                     </div>
                     <!-- Alert Error -->
                     <div class="alert alert-danger text-center" ng-show="editError">
                         <span class="glyphicon glyphicon-remove"></span> <strong>{{responseEditError}}</strong>
                     </div>
-                    <form action="post" class="form-horizontal" name="form" ng-submit="submit()" novalidate>
+                    <form action="post" class="form-horizontal" name="form" novalidate>
                         <div class="form-group">
                             <label for="videoId" class="control-label col-md-2 col-sm-2">Video ID <strong class="text-danger">*</strong></label>
                             <div class="col-md-5 col-sm-5">
@@ -199,19 +201,25 @@
 
                             <div class="col-md-10 col-sm-10">
                                 <button type="button" class="btn btn-warning" ng-disabled="!form.$dirty || form.$dirty && form.$invalid"
-                                        ng-click="editVideo()"><span class="glyphicon glyphicon-edit"></span> Sửa
+                                        ng-click="editVideo()" ng-if="videoIsInPlaylist">
+                                    <span class="glyphicon glyphicon-edit"></span> Sửa
                                 </button>
-                                <button type="button" class="btn btn-primary"
+                                <button type="button" class="btn btn-primary" ng-disabled="!form.$dirty || form.$dirty && form.$invalid"
+                                        ng-if="!videoIsInPlaylist"
+                                        ng-click="addVideoToPlaylist()">
+                                    <i class="glyphicon glyphicon-upload"></i> Add
+                                </button>
+                                <button type="button" class="btn btn-info"
                                         title="Tự Động chỉnh sửa form theo dữ liệu chuẩn của youtube"
                                         ng-click="autoComplete()">
                                     <span class="glyphicon glyphicon-star-empty"></span> Tự Động
                                 </button>
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#alertDeleteModal"
-                                        title="Xóa video khỏi playlist của bạn">
+                                        title="Xóa video khỏi playlist của bạn" ng-if="videoIsInPlaylist">
                                     <span class="glyphicon glyphicon-trash"></span> Xóa
                                 </button>
                                 <button type="button" class="btn btn-info"
-                                        ng-click="resetEditForm()">
+                                        ng-click="resetEditForm()" ng-if="videoIsInPlaylist">
                                     <span class="glyphicon glyphicon-refresh"></span> Reset
                                 </button>
                             </div>

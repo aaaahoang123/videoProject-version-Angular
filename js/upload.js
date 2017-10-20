@@ -1,4 +1,4 @@
-VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $rootScope, $location) {
+VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $rootScope, $location, $timeout) {
     var token = localStorage.getItem('token');
     if (token !== null) {
         $scope.isSignedIn = true;
@@ -100,10 +100,10 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
             data: $scope.videoData
         }).then(function successCallback(response) {
             $scope.uploadSuccess = true;
-            setTimeout(function () {
+            $timeout(function () {
                 location.reload();
             }, 1000)
-        }).then(function errorCallback(response) {
+        }, function errorCallback(response) {
             console.log(response);
         })
     };

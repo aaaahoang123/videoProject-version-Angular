@@ -8,7 +8,7 @@
     <header class="row">
         <!--The Slide Show-->
         <div class="col-md-6">
-            <div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <div id="myCarousel" class="carousel slide" data-ride="carousel" ng-init="getTopTrendingForSlideShow()">
                 <!-- Indicators -->
                 <ol class="carousel-indicators">
                     <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -18,37 +18,15 @@
 
                 <!-- Wrapper for slides -->
                 <div class="carousel-inner">
-                    <div class="item active">
-                        <a href="#!watch?youtubeId=Y29OrOVJUKs">
-                            <img src="https://i.ytimg.com/vi/Y29OrOVJUKs/hqdefault.jpg" alt="Em gái mưa" title="Em gái mưa" style="width:100%">
+                    <div class="item" ng-class="{active:$first}" ng-repeat="video in topTrendingVideos">
+                        <a href="#!watch?youtubeId={{video.id}}">
+                            <img src="https://i.ytimg.com/vi/{{video.id}}/hqdefault.jpg" alt="{{video.snippet.title}}" title="{{video.snippet.title}}" style="width:100%">
                         </a>
-
                         <div class="carousel-caption">
-                            <h3>Em gái mưa</h3>
-                            <p>Hương Tràm</p>
+                            <h4 class="">{{video.snippet.title}}</h4>
                         </div>
                     </div>
 
-                    <div class="item">
-                        <a href="#!watch?youtubeId=j__Q13iAxNk">
-                            <img src="https://i.ytimg.com/vi/j__Q13iAxNk/hqdefault.jpg" alt="Phía sau một cô gái" title="Phía sau một cô gái" style="width:100%">
-                        </a>
-                        <div class="carousel-caption">
-                            <h3>Phía sau một cô gái</h3>
-                            <p>Soobin Hoàng Sơn</p>
-                        </div>
-                    </div>
-
-                    <div class="item">
-                        <a href="#!watch?youtubeId=3AtDnEC4zak">
-                            <img src="https://i.ytimg.com/vi/3AtDnEC4zak/hqdefault.jpg" alt="We Don't Talk Anymore" title="We Don't Talk Anymore" style="width:100%">
-                        </a>
-
-                        <div class="carousel-caption">
-                            <h3>We Don't Talk Anymore</h3>
-                            <p>Charlie Puth</p>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Left and right controls -->

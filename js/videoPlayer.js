@@ -15,6 +15,16 @@ VideoPlayerApp.controller('VideoPlayerController', function ($scope, $http,$sce,
         $scope.maxResults += 8;
         $scope.loadVideofromYT();
     };
+    $scope.getTopTrendingForSlideShow = function () {
+        $http({
+            method: 'GET',
+            url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet&chart=mostPopular&maxResults=3&regionCode=VN&key=AIzaSyBStdhzhkK8ne1tqsUz4A8j9axNi0NqE_M'
+        }).then(function successCallback(response) {
+            $scope.topTrendingVideos = response.data.items;
+        }, function errorCallback(reponse) {
+            console.log(reponse);
+        })
+    };
     $scope.loadVideofromYT = function () {
         $scope.downloadingVideo = true;
         $http({

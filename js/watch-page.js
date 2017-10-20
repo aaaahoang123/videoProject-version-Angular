@@ -70,7 +70,30 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
             }
         }
     };
-
+    // Auto Complete
+    $scope.autoComplete = function () {
+        var videoId = $scope.editData.data.attributes.youtubeId;
+        var youtubeApi = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+ videoId + '&key=AIzaSyBStdhzhkK8ne1tqsUz4A8j9axNi0NqE_M';
+        $http({
+            method: 'GET',
+            url: youtubeApi
+        }).then(function successCallback(response) {
+            $scope.editData = {
+                'data': {
+                    'attributes': {
+                        'playlistId': $scope.videoData.attributes.playlistId,
+                        'youtubeId': $scope.videoData.attributes.youtubeId,
+                        'name': response.data.items[0].snippet.title,
+                        'description': response.data.items[0].snippet.description,
+                        'keywords': angular.toJson(response.data.items[0].snippet.tags, 3),
+                        'thumbnail': response.data.items[0].snippet.thumbnails.medium.url
+                    }
+                }
+            };
+        }, function errorCallback(response) {
+            console.log(response);
+        })
+    };
     // When play video in playlist or play a playlist
     if ($scope.theId !== undefined || $scope.theId === undefined && $scope.thePlaylisId !== undefined && $scope.theYoutubeId === undefined) {
         $scope.videoIsInPlaylist = true;
@@ -232,31 +255,6 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
                 $scope.responseEditError = response;
             });
         };
-
-    // Auto Complete
-        $scope.autoComplete = function () {
-            var videoId = $scope.editData.data.attributes.youtubeId;
-            var youtubeApi = 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+ videoId + '&key=AIzaSyBStdhzhkK8ne1tqsUz4A8j9axNi0NqE_M';
-            $http({
-                method: 'GET',
-                url: youtubeApi
-            }).then(function successCallback(response) {
-                $scope.editData = {
-                    'data': {
-                        'attributes': {
-                            'playlistId': $scope.videoData.attributes.playlistId,
-                            'youtubeId': $scope.videoData.attributes.youtubeId,
-                            'name': response.data.items[0].snippet.title,
-                            'description': response.data.items[0].snippet.description,
-                            'keywords': angular.toJson(response.data.items[0].snippet.tags, 3),
-                            'thumbnail': response.data.items[0].snippet.thumbnails.medium.url
-                        }
-                    }
-                };
-            }, function errorCallback(response) {
-                console.log(response);
-            })
-        };
     }
 
     else if ($scope.theYoutubeId !== undefined) {
@@ -265,17 +263,20 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
             method: 'GET',
             url: 'https://www.googleapis.com/youtube/v3/videos?part=snippet&id='+ $scope.theYoutubeId + '&key=AIzaSyBStdhzhkK8ne1tqsUz4A8j9axNi0NqE_M'
         }).then(function successCallBack(response) {
-            $scope.videoData = {
+            $scope.editData = {
+                'data': {
                     'attributes': {
                         'youtubeId': response.data.items[0].id,
                         'playlistId': "",
-                        'createdTimeMLS': response.data.items[0].snippet.publishedAt,
                         'name': response.data.items[0].snippet.title,
                         'description': response.data.items[0].snippet.description,
                         'keywords': angular.toJson(response.data.items[0].snippet.tags, 3),
                         'thumbnail': response.data.items[0].snippet.thumbnails.medium.url
                     }
+                }
             };
+            angular.copy($scope.editData.data, $scope.videoData);
+            $scope.videoData.attributes.createdTimeMLS = response.data.items[0].snippet.publishedAt;
             $scope.videoData.attributes.createdTimeMLS = new Date($scope.videoData.attributes.createdTimeMLS).toLocaleDateString();
             $scope.srcLink = 'https://www.youtube.com/embed/' + $scope.videoData.attributes.youtubeId + '?autoplay=1';
             $scope.srcLink = $sce.trustAsResourceUrl($scope.srcLink);
@@ -283,10 +284,8 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
                 $scope.videoData.attributes.keywords = $scope.videoData.attributes.keywords.replace('[', '');
                 $scope.videoData.attributes.keywords = $scope.videoData.attributes.keywords.replace(']', '');
             }
-            $scope.editData = {
-              'data': $scope.videoData
-            };
-            //Then get the sub video for this shit a nest HTTP truely
+
+            //Then get the sub video for this shit by a nest HTTP truely
             $http({
                 method: 'GET',
                 url: 'https://content.googleapis.com/youtube/v3/search?q=' + response.data.items[0].snippet.tags[0] + '&videoEmbeddable=true&maxResults=12&type=video&videoSyndicated=true&part=snippet&key=AIzaSyBStdhzhkK8ne1tqsUz4A8j9axNi0NqE_M'
@@ -311,6 +310,31 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
         }, function errorCallBack(response) {
             console.log(response);
         });
+
+        $scope.addVideoToPlaylist = function () {
+            if ($scope.editData.data.attributes.thumbnail === "") {
+                $scope.editData.data.attributes.thumbnail = 'https://i.ytimg.com/vi/' + $scope.editData.data.attributes.youtubeId + '/hqdefault.jpg';
+            }
+            $http ({
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token')
+                },
+                url: videoApi,
+                data: $scope.editData
+            }).then(function successCallback(response) {
+                $scope.editSuccess = true;
+                $timeout(function () {
+                    $scope.editSuccess = false;
+                    $scope.editData = {};
+                    $("#editModal").modal("hide");
+                }, 1000)
+            },function errorCallback(response) {
+                $scope.responseEditError = response;
+                $scope.editError = true;
+            });
+        };
 
     }
 });
