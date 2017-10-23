@@ -278,14 +278,14 @@ VideoPlayerApp.controller('watchPageController', function ($scope, $rootScope, $
             angular.copy($scope.editData.data, $scope.videoData);
             $scope.videoData.attributes.createdTimeMLS = response.data.items[0].snippet.publishedAt;
             $scope.videoData.attributes.createdTimeMLS = new Date($scope.videoData.attributes.createdTimeMLS).toLocaleDateString();
-            $scope.srcLink = 'https://www.youtube.com/embed/' + $scope.videoData.attributes.youtubeId + '?autoplay=1';
+            $scope.srcLink = 'https://www.youtube.com/embed/' + $scope.videoData.attributes.youtubeId + '?autoplay=1&rel=0&amp;showinfo=0';
             $scope.srcLink = $sce.trustAsResourceUrl($scope.srcLink);
             if  ($scope.videoData.attributes.keywords !== undefined) {
                 $scope.videoData.attributes.keywords = $scope.videoData.attributes.keywords.replace('[', '');
                 $scope.videoData.attributes.keywords = $scope.videoData.attributes.keywords.replace(']', '');
             }
 
-            //Then get the sub video for this shit by a nest HTTP truely
+            //Then get the sub video for this shit by a nest HTTP
             $http({
                 method: 'GET',
                 url: 'https://content.googleapis.com/youtube/v3/search?q=' + response.data.items[0].snippet.tags[0] + '&videoEmbeddable=true&maxResults=12&type=video&videoSyndicated=true&part=snippet&key=AIzaSyBStdhzhkK8ne1tqsUz4A8j9axNi0NqE_M'

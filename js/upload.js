@@ -79,11 +79,17 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
             }
         }
     };
-    $scope.urlYoutube = "";
+    $scope.createUrlYouTube = function () {
+      $scope.url = {
+          'urlYoutube': ""
+      };
+    };
     $scope.convertToId = function() {
-        var pattern = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/i;
-        var id = $scope.urlYoutube.match(pattern);
-        $scope.videoData.data.attributes.youtubeId = id[5];
+        var pattern = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/;
+        var id = $scope.url.urlYoutube.match(pattern);
+        if (id !== null) {
+            $scope.videoData.data.attributes.youtubeId = id[5];
+        }
     };
     
     $scope.submit = function () {
@@ -130,7 +136,7 @@ VideoPlayerApp.controller('UploadFormController', function ($scope, $http, $root
                 }
             }
         };
-        $scope.urlYoutube = "";
+        $scope.url.urlYoutube = "";
     };
     $scope.addPlaylist = function () {
         $location.path('/playlist');

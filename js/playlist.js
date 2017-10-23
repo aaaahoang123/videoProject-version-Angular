@@ -29,7 +29,6 @@ VideoPlayerApp.controller('playlistUploadController', function ($scope, $http, $
                     $scope.videosArray[i].attributes.createdTimeMLS = new Date($scope.videosArray[i].attributes.createdTimeMLS).toLocaleDateString();
                 }
             }
-            console.log($scope.videosArray);
         }, function errorCallBack(response) {
             alert('Tải video thất bại');
         });

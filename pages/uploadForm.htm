@@ -80,11 +80,11 @@
                     </div>
 
                 </div>
-                <div class="form-group">
+                <div class="form-group" ng-init="createUrlYouTube()">
                     <label for="video-url" class="control-label col-md-2 col-sm-2">Youtube Url </label>
                     <div class="col-md-5 col-sm-5">
-                        <input type="text" name='video-url' class="form-control" placeholder="Bạn có thể lựa chọn nhập URL Youtube thay cho ID" 
-                                ng-model="urlYoutube"
+                        <input type="text" name='video-url' class="form-control" placeholder="Bạn có thể lựa chọn nhập URL Youtube thay cho ID"
+                                ng-model="url.urlYoutube"
                                 ng-change="convertToId(); responseIdNotExist=false"
                                 ng-disabled = "form.videoId.$valid && existId">
                     </div>

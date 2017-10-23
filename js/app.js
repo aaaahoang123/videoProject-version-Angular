@@ -56,6 +56,9 @@ VideoPlayerApp.config(['$routeProvider', function($routeProvider) {
         when('/alertSignUp', {
             templateUrl: 'pages/alertSignUp.htm'
         }).
+        when('/about', {
+            templateUrl: 'pages/about.htm'
+        }).
         otherwise({
             redirectTo: '/'
         });
